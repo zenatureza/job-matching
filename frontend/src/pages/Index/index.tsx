@@ -39,12 +39,12 @@ const Index: React.FC = () => {
         <Submit>Pesquisar melhores resultados</Submit>
       </Container>
       <div>
-        Ou navegue abaixo para encontrá-los:
+        Ou navegue nas vagas disponíveis abaixo para encontrá-los:
         {/* TODO: Componente que contém uma lista de vagas */}
         <ul>
-          <li>Árthur</li>
-          <li>Felipe</li>
-          <li>Pedro</li>
+          <li>Vaga 1</li>
+          <li>Vaga 2</li>
+          <li>Vaga 3</li>
         </ul>
       </div>
     </Form.Row>

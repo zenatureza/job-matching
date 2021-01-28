@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -14,7 +12,7 @@ using Xunit;
 
 namespace UseCases.Tests
 {
-    public class GetJobsTest : IntegrationTestSetup
+    public class GetJobsTests : IntegrationTestSetup
     {
         [Fact]
         public async void ShouldReturnAllAvailableJobs()
@@ -43,15 +41,13 @@ namespace UseCases.Tests
             var request = new GetJobsQuery();
 
             // Act
-            var retrievedJobs = await requestHandler
+            IEnumerable<Job> retrievedJobs = await requestHandler
                 .Handle(request, new CancellationToken());
 
             // Assert
-            Assert.NotNull(retrievedJobs);
-
             retrievedJobs
                 .Should()
-                .HaveCountGreaterThan(0);
+                .NotBeNullOrEmpty();
         }
     }
 }

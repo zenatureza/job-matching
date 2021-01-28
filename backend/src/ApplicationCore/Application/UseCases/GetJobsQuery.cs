@@ -4,17 +4,20 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using ApplicationCore.Application.Utils;
 using MediatR;
 using Newtonsoft.Json.Linq;
 
 namespace ApplicationCore
 {
-    public class GetJobsQuery : IRequest<IEnumerable<Job>>
+    public class GetJobsQuery :
+        IRequest<IEnumerable<Job>>
     {
         // TODO: Adicionar campos da requisição
     }
 
-    public class GetJobsQueryHandler : IRequestHandler<GetJobsQuery, IEnumerable<Job>>
+    public class GetJobsQueryHandler :
+        IRequestHandler<GetJobsQuery, IEnumerable<Job>>
     {
         private readonly HttpClient _httpClient;
 
@@ -23,27 +26,19 @@ namespace ApplicationCore
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Job>> Handle(GetJobsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Job>> Handle(
+            GetJobsQuery request,
+            CancellationToken cancellationToken)
         {
+            // TODO: Remover magic string
             var response = await _httpClient
-                .GetAsync("https://geekhunter-recruiting.s3.amazonaws.com/code_challenge.json");
+                .GetAsync("https://geekhunter-recruiting.s3.amazonaws.com/code_challenge.json",
+                          cancellationToken);
 
-            var body = await response.Content
-                .ReadAsStringAsync(cancellationToken);
-
-            JObject jobsParsed = JObject.Parse(body);
-            IList<JToken> results = jobsParsed["jobs"]
-                .Children()
-                .ToList();
-
-            IList<Job> jobs = new List<Job>();
-            foreach (JToken result in results)
-            {
-                Job job = result.ToObject<Job>();
-                jobs.Add(job);
-            }
-
-            return jobs;
+            return await HttpResponseConverter<Job>
+                .GetArrayFromJsonByKey(response,
+                                       "jobs",
+                                       cancellationToken);
         }
     }
 }

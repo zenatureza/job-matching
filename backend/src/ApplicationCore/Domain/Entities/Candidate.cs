@@ -2,9 +2,13 @@
 
 namespace ApplicationCore.Domain
 {
+    // TODO: City and experience should be enums
     public class Candidate
     {
-        public Candidate(string city, string experience, IReadOnlyList<CandidateTechnology> candidateTechnologies)
+        public Candidate(
+            string city,
+            string experience,
+            IReadOnlyList<CandidateTechnology> candidateTechnologies)
         {
             City = city;
             Experience = experience;
