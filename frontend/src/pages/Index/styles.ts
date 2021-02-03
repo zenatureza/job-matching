@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export const Container = styled(Col)``;
 
 export const Input = styled(Form.Control)`
-  width: auto;
+  width: 100%;
 `;
 
 export const Submit = styled(Button)``;

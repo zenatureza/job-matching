@@ -1,6 +1,7 @@
 import React from 'react';
-import { Col, Form } from 'react-bootstrap';
+import { Col, Form, Row } from 'react-bootstrap';
 import Select from 'react-select';
+import BasicExample from '../../components/BasicExample';
 
 import { Container, Input, Submit } from './styles';
 
@@ -18,26 +19,36 @@ const Index: React.FC = () => {
   ];
 
   return (
-    <Form.Row>
-      Busque candidatos para a vaga conforme os filtros:
-      <Container xs={12}>
-        <Col>
-          <Select placeholder="Selecione a localização" options={cityOptions} />
-        </Col>
+    <>
+      <h6>Busque candidatos para a vaga conforme os filtros:</h6>
 
-        <Col>
-          <Select
-            placeholder="Selecione o tempo de experiência"
-            options={experienceOptions}
-          />
-        </Col>
+      <Col>
+        <Row>
+          <Col xs={2}>
+            <Select
+              placeholder="Selecione a localização"
+              options={cityOptions}
+            />
+          </Col>
 
-        <Col xs="auto">
-          <Input type="text" placeholder="Digite as tecnologias" />
-        </Col>
+          <Col xs={2}>
+            <Select
+              placeholder="Selecione o tempo de experiência"
+              options={experienceOptions}
+            />
+          </Col>
 
+          <Col xs={8}>
+            <Input type="text" placeholder="Digite as tecnologias" />
+          </Col>
+        </Row>
+      </Col>
+
+      {/* <Row>
         <Submit>Pesquisar melhores resultados</Submit>
-      </Container>
+      </Row> */}
+      <BasicExample />
+
       <div>
         Ou navegue nas vagas disponíveis abaixo para encontrá-los:
         {/* TODO: Componente que contém uma lista de vagas */}
@@ -47,7 +58,7 @@ const Index: React.FC = () => {
           <li>Vaga 3</li>
         </ul>
       </div>
-    </Form.Row>
+    </>
   );
 };
 
