@@ -1,29 +1,22 @@
-import City from '@modules/cities/infra/typeorm/entities/City.entity';
+import JobTechnology from '@modules/states/infra/typeorm/entities/JobTechnology.entity';
+import Technology from '@modules/technologies/infra/typeorm/entities/Technology.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinTable,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import CandidateTechnology from './CandidateTechnology.entity';
 
-@Entity('candidates')
-class Candidate {
+@Entity('jobs')
+class Job {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   recruiting_api_id: number;
-
-  @Column()
-  city_id: string;
-
-  @OneToOne(() => City)
-  city: City;
 
   /**
    * Both 'start_experience_range' and 'end_experience_range' are in years.
@@ -34,11 +27,11 @@ class Candidate {
 
   // e.g. '12+ years' <==> start_experience_range = 12, end_experience_range = null
   @Column({ nullable: true })
-  end_experience_range: number | null;
+  end_experience_range: number;
 
-  @OneToMany(() => CandidateTechnology, technology => technology.candidate)
+  @OneToMany(() => JobTechnology, technology => technology.job)
   @JoinTable()
-  technologies: CandidateTechnology[];
+  technologies: JobTechnology[];
 
   @CreateDateColumn()
   created_at: Date;
@@ -47,4 +40,4 @@ class Candidate {
   updated_at: Date;
 }
 
-export default Candidate;
+export default Job;

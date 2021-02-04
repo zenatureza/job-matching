@@ -1,10 +1,18 @@
+import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import { Request, Response } from 'express';
-// import { container } from 'tsyringe';
+import { container } from 'tsyringe';
 
 export default class CandidatesController {
+  /**
+   *
+   * @param request { city, experience, technologies }
+   * @param response { best_matches }
+   */
   public async get(request: Request, response: Response): Promise<Response> {
-    return response.json({
-      test: 'Árthur',
-    });
+    const service = container.resolve(GetDataFromRecruitingApiService);
+
+    const data = await service.execute();
+
+    return response.json(data);
   }
 }
