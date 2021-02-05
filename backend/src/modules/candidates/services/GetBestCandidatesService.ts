@@ -5,6 +5,8 @@ import { recruitingApi } from '@shared/infra/http/recruitingApi';
 import RecruitingApiResponse from '@shared/infra/http/recruitingApi/RecruitingApiResponse.interface';
 import { inject, injectable } from 'tsyringe';
 import CandidateDTO from '../dtos/CandidateDTO';
+import CalculateBestCandidatesService from './CalculateBestCandidatesService';
+import UpdateCandidatesService from './UpdateCandidatesService';
 
 // TODO: should be this format?
 interface IRequest {
@@ -26,6 +28,12 @@ class GetBestCandidatesService {
   constructor(
     @inject('GetDataFromRecruitingApiService')
     private getDataFromRecruitingApiService: GetDataFromRecruitingApiService,
+
+    @inject('UpdateCandidatesService')
+    private updateCandidatesService: UpdateCandidatesService,
+
+    @inject('CalculateBestCandidatesService')
+    private calculateBestCandidatesService: CalculateBestCandidatesService,
   ) {}
 
   public async execute({
@@ -44,17 +52,19 @@ class GetBestCandidatesService {
         await this.updateCandidatesService.execute(
           recruitingApiData.candidates,
         );
+
+        // TODO:
         await this.updateJobsService.execute(recruitingApiData.jobs);
       }
     } catch (error) {
       // TODO: handle could not get most updated data - should not stop program execution
     } finally {
       // TODO: Should call python api?
-      const bestCandidates = await this.calculateBestCandidatesService.execute(
+      const bestCandidates = await this.calculateBestCandidatesService.execute({
         city,
         experience,
         technologies,
-      );
+      });
 
       return bestCandidates;
     }

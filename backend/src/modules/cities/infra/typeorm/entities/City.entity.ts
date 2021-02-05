@@ -1,11 +1,4 @@
-import State from '@modules/states/infra/typeorm/entities/State.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('cities')
 class City {
@@ -15,20 +8,24 @@ class City {
   @Column()
   name: string;
 
+  // e.g. RS, SC, SP
   @Column()
-  state_id: string;
+  state_initials: string;
 
-  @OneToOne(() => State, { nullable: true })
-  state: State;
+  // @Column()
+  // state_id: string;
+
+  // @OneToOne(() => State, { nullable: true })
+  // state: State;
 
   // e.g. name = 'São Paulo', state.initials = 'SP' -> 'São Paulo - SP'
   public getCityWithState() {
-    // if remote, this.state is null
-    if (!this.state_id || !this.state) {
+    // if remote this.state is null
+    if (!this.state_initials) {
       return this.name;
     }
 
-    return `${this.name} - ${this.state.initials}`;
+    return `${this.name} - ${this.state_initials}`;
   }
 }
 

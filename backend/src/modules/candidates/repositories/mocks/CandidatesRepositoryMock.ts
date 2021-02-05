@@ -1,5 +1,5 @@
 import RecruitingApiCandidateDTO from '@modules/candidates/dtos/RecruitingApiCandidateDTO';
-import Candidate from '@modules/candidates/infra/typeorm/repositories/entities/Candidate.entity';
+import Candidate from '@modules/candidates/infra/typeorm/entities/Candidate.entity';
 import ICandidatesRepository from '../ICandidatesRepository';
 
 export default class CandidatesRepositoryMock implements ICandidatesRepository {

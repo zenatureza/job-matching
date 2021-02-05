@@ -1,10 +1,8 @@
-import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import RecruitingApiCandidateTechnologyDTO from '@modules/technologies/dtos/RecruitingApiCandidateTechnologyDTO';
-import AppError from '@shared/errors/AppError';
-import { recruitingApi } from '@shared/infra/http/recruitingApi';
-import RecruitingApiResponse from '@shared/infra/http/recruitingApi/RecruitingApiResponse.interface';
+import TechnologiesRepository from '@modules/technologies/infra/typeorm/repositories/TechnologiesRepository';
 import { inject, injectable } from 'tsyringe';
-import CandidateDTO from '../dtos/CandidateDTO';
+import Candidate from '../infra/typeorm/entities/Candidate.entity';
+import CandidatesRepository from '../infra/typeorm/repositories/CandidatesRepository';
 
 // TODO: should be this format?
 interface IRequest {
@@ -23,14 +21,27 @@ interface IRequest {
  */
 @injectable()
 class CalculateBestCandidatesService {
-  constructor() {}
+  constructor(
+    @inject('CandidatesRepository')
+    private candidatesRepository: CandidatesRepository,
+
+    @inject('TechnologiesRepository')
+    private technologiesRepository: TechnologiesRepository,
+  ) {}
 
   public async execute({
     city,
     experience,
     technologies,
-  }: IRequest): Promise<CandidateDTO[] | undefined> {
-    return undefined;
+  }: IRequest): Promise<Candidate[] | undefined> {
+    // 1. should try to retreive candidates with the request parameters
+    const candidatesInCityWithExperience = await this.candidatesRepository.findByFilters(
+      city,
+      experience,
+      technologies,
+    );
+
+    return candidatesInCityWithExperience;
   }
 }
 

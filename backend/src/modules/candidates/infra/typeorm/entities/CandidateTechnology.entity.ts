@@ -17,6 +17,9 @@ class CandidateTechnology {
   id: string;
 
   @Column()
+  recruiting_api_candidate_id: number;
+
+  @Column()
   candidate_id: string;
 
   @ManyToOne(() => Candidate, candidate => candidate.technologies)
@@ -24,6 +27,7 @@ class CandidateTechnology {
   candidate: Candidate;
 
   @OneToOne(() => Technology)
+  @JoinColumn()
   technology: Technology;
 
   @Column()
@@ -34,6 +38,19 @@ class CandidateTechnology {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  constructor(
+    technology: Technology,
+    recruiting_api_candidate_id: number,
+    candidate_id?: string,
+  ) {
+    this.technology = technology;
+    this.recruiting_api_candidate_id = recruiting_api_candidate_id;
+
+    if (candidate_id) {
+      this.candidate_id = candidate_id;
+    }
+  }
 }
 
 export default CandidateTechnology;
