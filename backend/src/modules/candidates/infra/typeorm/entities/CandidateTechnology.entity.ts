@@ -1,4 +1,5 @@
 import Technology from '@modules/technologies/infra/typeorm/entities/Technology.entity';
+import { Joi } from 'celebrate';
 import {
   Column,
   CreateDateColumn,
@@ -6,28 +7,32 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import Candidate from './Candidate.entity';
 
 @Entity('candidates_technologies')
 class CandidateTechnology {
-  @PrimaryGeneratedColumn('uuid')
+  // @PrimaryColumn({ generated: 'uuid' })
+  @PrimaryColumn({ generated: 'uuid' })
   id: string;
 
   @Column()
   recruiting_api_candidate_id: number;
 
-  @Column()
+  @Column({ type: 'uuid', name: 'candidate_id' })
   candidate_id: string;
 
   @ManyToOne(() => Candidate, candidate => candidate.technologies)
   @JoinColumn({ name: 'candidate_id' })
   candidate: Candidate;
 
-  @OneToOne(() => Technology)
-  @JoinColumn()
+  @Column({ type: 'uuid', name: 'technology_id' })
+  technology_id: string;
+
+  @OneToOne(() => Technology, tech => tech.id)
+  @JoinColumn({ name: 'technology_id' })
   technology: Technology;
 
   @Column()

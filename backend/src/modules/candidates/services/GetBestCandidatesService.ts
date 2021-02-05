@@ -54,9 +54,10 @@ class GetBestCandidatesService {
         );
 
         // TODO:
-        await this.updateJobsService.execute(recruitingApiData.jobs);
+        // await this.updateJobsService.execute(recruitingApiData.jobs);
       }
     } catch (error) {
+      console.log(error);
       // TODO: handle could not get most updated data - should not stop program execution
     } finally {
       // TODO: Should call python api?
@@ -66,7 +67,20 @@ class GetBestCandidatesService {
         technologies,
       });
 
-      return bestCandidates;
+      return bestCandidates?.map(candidate => {
+        return {
+          city: candidate.city.getCityWithState(),
+          experience: candidate.getExperience(),
+          technologies: candidate.technologies.map(candidateTech => {
+            const tech = candidateTech.technology;
+
+            return {
+              name: tech.name,
+              is_main_tech: candidateTech.is_main_tech,
+            };
+          }),
+        };
+      });
     }
   }
 }

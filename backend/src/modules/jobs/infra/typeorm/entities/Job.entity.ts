@@ -1,18 +1,17 @@
-import JobTechnology from '@modules/states/infra/typeorm/entities/JobTechnology.entity';
-import Technology from '@modules/technologies/infra/typeorm/entities/Technology.entity';
+import JobTechnology from '@modules/jobs/infra/typeorm/entities/JobTechnology.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinTable,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('jobs')
 class Job {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ generated: 'uuid' })
   id: string;
 
   @Column()

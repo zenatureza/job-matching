@@ -6,14 +6,14 @@ import {
   JoinTable,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import CandidateTechnology from './CandidateTechnology.entity';
 
 @Entity('candidates')
 class Candidate {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ generated: 'uuid' })
   id: string;
 
   @Column()
@@ -33,8 +33,15 @@ class Candidate {
   start_experience_range: number;
 
   // e.g. '12+ years' <==> start_experience_range = 12, end_experience_range = null
-  @Column({ nullable: true })
-  end_experience_range: number | null;
+  @Column()
+  end_experience_range: number;
+
+  public getExperience() {
+    const end =
+      (this.end_experience_range ? '-' + this.end_experience_range : '+') +
+      ' years';
+    return `${this.start_experience_range}${end}`;
+  }
 
   @OneToMany(() => CandidateTechnology, technology => technology.candidate)
   @JoinTable()

@@ -7,13 +7,13 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('jobs_technologies')
 class JobTechnology {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ generated: 'uuid' })
   id: string;
 
   @Column()

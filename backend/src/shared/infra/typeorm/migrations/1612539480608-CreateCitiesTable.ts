@@ -1,11 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateTechnologies1612320444115
-  implements MigrationInterface {
+export class CreateCitiesTable1612539480608 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'technologies',
+        name: 'cities',
         columns: [
           {
             name: 'id',
@@ -19,12 +18,16 @@ export default class CreateTechnologies1612320444115
             type: 'varchar',
             isNullable: false,
           },
+          {
+            name: 'state_initials',
+            type: 'varchar',
+          },
         ],
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('technologies');
+    await queryRunner.dropTable('cities');
   }
 }

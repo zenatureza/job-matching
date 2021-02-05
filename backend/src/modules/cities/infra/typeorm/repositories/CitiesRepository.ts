@@ -19,13 +19,28 @@ class CitiesRepository implements ICitiesRepository {
      * WHERE ('name' = 'Santiago' AND 'state_initials' = 'SC')
      * OR ('name' = 'Santiago' AND 'state_initials' = 'RS')
      */
-    return this.ormRepository.find({
-      where: [
-        namesAndStateInitials.map(item => {
-          return { name: item[0], state_initials: item[1] };
-        }),
-      ],
+
+    // const result = await this.ormRepository.find({
+    //   where: [
+    //     namesAndStateInitials
+    //       .filter(item => item[0] && item[1])
+    //       .map(item => {
+    //         return { name: item[0], state_initials: item[1] };
+    //       }),
+    //   ],
+    // });
+    const queryParams = namesAndStateInitials.map(nameAndState => {
+      return {
+        name: nameAndState[0].toUpperCase(),
+        state_initials: nameAndState[1].toUpperCase(),
+      };
     });
+
+    const result = await this.ormRepository.find({
+      where: queryParams,
+    });
+
+    return result;
   }
 }
 
