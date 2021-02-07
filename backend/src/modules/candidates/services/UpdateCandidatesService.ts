@@ -1,6 +1,7 @@
 import City from '@modules/cities/infra/typeorm/entities/City.entity';
 import ICitiesRepository from '@modules/cities/repositories/ICitiesRepository';
 import Technology from '@modules/technologies/infra/typeorm/entities/Technology.entity';
+import CreateTechnologiesService from '@modules/technologies/services/CreateTechnologiesService';
 import getCityAndStateFromRecruitingApiCity from '@shared/utils/getCityAndStateFromRecruitingApiCity';
 import getExperienceRange from '@shared/utils/getExperienceRange';
 import { inject, injectable } from 'tsyringe';
@@ -9,6 +10,7 @@ import Candidate from '../infra/typeorm/entities/Candidate.entity';
 import CandidateTechnology from '../infra/typeorm/entities/CandidateTechnology.entity';
 import ICandidatesRepository from '../repositories/ICandidatesRepository';
 import ICandidatesTechnologiesRepository from '../repositories/ICandidatesTechnologiesRepository';
+import CreateCandidatesService from './CreateCandidatesService';
 
 /**
  * Should update db candidates with recruiting api data.
@@ -25,6 +27,12 @@ class UpdateCandidatesService {
 
     @inject('CandidatesTechnologiesRepository')
     private candidatesTechnologiesRepository: ICandidatesTechnologiesRepository,
+
+    @inject('CreateTechnologiesService')
+    private createTechnologiesService: CreateTechnologiesService,
+
+    @inject('CreateCandidatesService')
+    private createCandidatesService: CreateCandidatesService,
   ) {}
 
   public async execute(
@@ -47,15 +55,26 @@ class UpdateCandidatesService {
       });
     });
 
-    const candidatesTechnologies = await this.candidatesTechnologiesRepository.findByTechnologiesNames(
+    // creates unknown technologies, if needed
+    const techNamesToCreate = Array.from(new Set(candidatesTechnologiesNames));
+    await this.createTechnologiesService.execute(techNamesToCreate);
+
+    // creates unknown candidates
+    const candidates = await this.createCandidatesService.execute(
+      recruitingApiCandidates,
+    );
+
+    const candidatesTechnologiesDb = await this.candidatesTechnologiesRepository.findByTechnologiesNames(
       candidatesTechnologiesNames,
     );
 
-    const technologies = candidatesTechnologies?.map(
+    const technologiesFromCandidates = candidatesTechnologiesDb?.map(
       candidateTech => candidateTech.technology,
     );
 
     // TODO: Handle candidatesCities === undefined
+
+    // TODO: criar uma service: 'CreateCandidatesService', e fazer a criação assim como das tecnologias
 
     // get existing candidates
     const recruitingApiCandidatesIds = recruitingApiCandidates.map(
@@ -66,86 +85,103 @@ class UpdateCandidatesService {
       recruitingApiCandidatesIds,
     );
 
-    // // update existing candidates
-    // if (existingCandidatesDb) {
-    //   existingCandidatesDb = existingCandidatesDb.map(dbCandidate => {
-    //     const apiCandidate = recruitingApiCandidates.find(
-    //       apiCandidate => apiCandidate.id === dbCandidate.recruiting_api_id,
-    //     );
+    // update existing candidates
+    if (existingCandidatesDb) {
+      existingCandidatesDb = existingCandidatesDb.map(dbCandidate => {
+        const apiCandidate = recruitingApiCandidates.find(
+          apiCandidate => apiCandidate.id === dbCandidate.recruiting_api_id,
+        );
 
-    //     if (apiCandidate) {
-    //       const [start, end] = getExperienceRange(apiCandidate.experience);
+        if (apiCandidate) {
+          const [start, end] = getExperienceRange(apiCandidate.experience);
 
-    //       dbCandidate.start_experience_range = start;
-    //       dbCandidate.end_experience_range = end ?? 0;
+          dbCandidate.start_experience_range = start;
+          dbCandidate.end_experience_range = end ?? 0;
 
-    //       if (dbCandidate.city.getCityWithState() !== apiCandidate.city) {
-    //         const cityAndState = getCityAndStateFromRecruitingApiCity(
-    //           apiCandidate.city,
-    //         );
+          const cityWithState = dbCandidate.city.getCityWithState();
 
-    //         const city = candidatesCities?.find(
-    //           city =>
-    //             city.name === cityAndState[0] &&
-    //             city.state_initials === cityAndState[1],
-    //         );
+          if (
+            !dbCandidate.city ||
+            cityWithState !== apiCandidate.city.toUpperCase()
+          ) {
+            const cityAndState = getCityAndStateFromRecruitingApiCity(
+              apiCandidate.city,
+            );
 
-    //         if (city) {
-    //           dbCandidate.city = city;
-    //         }
-    //       }
+            const city = candidatesCities?.find(
+              city =>
+                city.name === cityAndState[0] &&
+                city.state_initials === cityAndState[1],
+            );
 
-    //       // before = [ { name: 'C#', is_main_tech: false }, { name: 'Python, is_main_tech: true } ]
-    //       // after = [ { name: 'C#', is_main_tech: true }, { name: 'Python, is_main_tech: false } ]
-    //       const newCandidateTechnologies = candidatesTechnologies?.filter(
-    //         candidateTech =>
-    //           candidateTech.recruiting_api_candidate_id === apiCandidate.id,
-    //       );
+            if (city) {
+              dbCandidate.city = city;
+            }
+          }
 
-    //       // update already existing candidate techs states
-    //       dbCandidate.technologies.forEach(dbCandidateTech => {
-    //         const newCandidateTechnology = newCandidateTechnologies?.find(
-    //           item => item.technology.name === dbCandidateTech.technology.name,
-    //         );
+          // before = [ { name: 'C#', is_main_tech: false }, { name: 'Python, is_main_tech: true } ]
+          // after = [ { name: 'C#', is_main_tech: true }, { name: 'Python, is_main_tech: false } ]
+          const newCandidateTechnologies = candidatesTechnologiesDb?.filter(
+            candidateTech =>
+              candidateTech.recruiting_api_candidate_id === apiCandidate.id,
+          );
 
-    //         // if existing candidates already has this tech, should only update 'is_main_tech' field
-    //         if (!newCandidateTechnology) {
-    //           return;
-    //         }
+          // update already existing candidate techs states
+          dbCandidate.technologies.forEach(dbCandidateTech => {
+            const newCandidateTechnology = newCandidateTechnologies?.find(
+              item => item.technology.name === dbCandidateTech.technology.name,
+            );
 
-    //         dbCandidateTech.is_main_tech = newCandidateTechnology.is_main_tech;
-    //       });
+            // if existing candidates already has this tech, should only update 'is_main_tech' field
+            if (!newCandidateTechnology) {
+              return;
+            }
 
-    //       // creates new ones
-    //       const technologiesToAdd = apiCandidate.technologies.filter(
-    //         apiTech =>
-    //           !dbCandidate.technologies
-    //             .map(dbTech => dbTech.technology.name)
-    //             .includes(apiTech.name),
-    //       );
+            const apiCandidateTech = apiCandidate.technologies.find(
+              tech => tech.name === dbCandidateTech.technology.name,
+            );
 
-    //       technologiesToAdd.forEach(tech => {
-    //         const techData = technologies?.find(t => t.name === tech.name);
+            if (
+              apiCandidateTech &&
+              typeof apiCandidateTech.is_main_tech === 'boolean'
+            ) {
+              dbCandidateTech.is_main_tech = apiCandidateTech.is_main_tech;
+            }
+          });
 
-    //         if (!techData) {
-    //           return;
-    //         }
+          // creates new ones
+          const recruitingApiTechnologiesToAdd = apiCandidate.technologies.filter(
+            apiTech =>
+              !dbCandidate.technologies
+                .map(dbTech => dbTech.technology.name)
+                .includes(apiTech.name),
+          );
 
-    //         const newTech = new CandidateTechnology(
-    //           techData,
-    //           apiCandidate.id,
-    //           dbCandidate.id,
-    //         );
+          recruitingApiTechnologiesToAdd.forEach(tech => {
+            const techData = technologiesFromCandidates?.find(
+              t => t.name === tech.name,
+            );
 
-    //         dbCandidate.technologies.push(newTech);
-    //       });
-    //     }
+            if (!techData) {
+              return;
+            }
 
-    //     return dbCandidate;
-    //   });
+            const newCandidateTech = new CandidateTechnology(
+              techData,
+              apiCandidate.id,
+              dbCandidate.id,
+            );
 
-    //   await this.candidatesRepository.save(existingCandidatesDb);
-    // }
+            dbCandidate.technologies.push(newCandidateTech);
+          });
+        }
+
+        return dbCandidate;
+      });
+
+      // await this.candidatesRepository.save(existingCandidatesDb);
+      console.log(existingCandidatesDb);
+    }
 
     // // create
     // const candidatesToCreate: RecruitingApiCandidateDTO[] = recruitingApiCandidates.filter(

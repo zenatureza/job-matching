@@ -9,9 +9,20 @@ import ICitiesRepository from '@modules/cities/repositories/ICitiesRepository';
 import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import TechnologiesRepository from '@modules/technologies/infra/typeorm/repositories/TechnologiesRepository';
 import ITechnologiesRepository from '@modules/technologies/repositories/ITechnologiesRepository';
+import CreateTechnologiesService from '@modules/technologies/services/CreateTechnologiesService';
+import RecruitingApi from '@shared/infra/http/RecruitingApi';
+import axios, { AxiosInstance, AxiosStatic } from 'axios';
 import { container } from 'tsyringe';
 
-// TODO: Register repositories
+container.registerInstance<AxiosInstance>(
+  'axios',
+  axios.create({
+    baseURL: 'https://geekhunter-recruiting.s3.amazonaws.com',
+  }),
+);
+
+container.registerSingleton<RecruitingApi>('RecruitingApi', RecruitingApi);
+
 container.registerSingleton<ICandidatesRepository>(
   'CandidatesRepository',
   CandidatesRepository,
@@ -46,3 +57,10 @@ container.registerSingleton<CalculateBestCandidatesService>(
   'CalculateBestCandidatesService',
   CalculateBestCandidatesService,
 );
+
+container.registerSingleton<CreateTechnologiesService>(
+  'CreateTechnologiesService',
+  CreateTechnologiesService,
+);
+
+// container.registerSingleton<typeof axios>('axios', typeof axios);

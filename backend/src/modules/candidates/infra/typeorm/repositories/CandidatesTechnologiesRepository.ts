@@ -21,16 +21,6 @@ class CandidatesTechnologiesRepository
         .printSql()
         .getMany();
 
-      // const result = await this.ormRepository.find({
-      //   // relations: ['technology'],
-      //   where: {
-      //     technology: {
-      //       name: 'React',
-      //       // id:
-      //       // id: 'd79cfdf9-f361-4cf3-835c-be1280cf0949',
-      //     },
-      //   },
-      // });
       return result;
     } catch (error) {
       console.log(error);

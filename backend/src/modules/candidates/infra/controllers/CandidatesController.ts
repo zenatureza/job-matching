@@ -11,14 +11,9 @@ export default class CandidatesController {
    * @param response { best_matches }
    */
   public async get(request: Request, response: Response): Promise<Response> {
-    // const service = container.resolve(GetDataFromRecruitingApiService);
-
-    // const data = await service.execute();
-
     const service = container.resolve(GetBestCandidatesService);
 
     const { city, experience, technologies } = request.query;
-    // console.log(city, experience, technologies);
 
     if (!city || !experience || !technologies)
       return response.status(400).json();
@@ -27,7 +22,6 @@ export default class CandidatesController {
       city: city?.toString() ?? '',
       experience: experience?.toString() ?? '',
       technologies: [],
-      // technologies: technologies.map,
     };
     if (Array.isArray(technologies)) {
       const technologiesArray = technologies as Array<string>;

@@ -1,8 +1,5 @@
 import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import RecruitingApiCandidateTechnologyDTO from '@modules/technologies/dtos/RecruitingApiCandidateTechnologyDTO';
-import AppError from '@shared/errors/AppError';
-import { recruitingApi } from '@shared/infra/http/recruitingApi';
-import RecruitingApiResponse from '@shared/infra/http/recruitingApi/RecruitingApiResponse.interface';
 import { inject, injectable } from 'tsyringe';
 import CandidateDTO from '../dtos/CandidateDTO';
 import CalculateBestCandidatesService from './CalculateBestCandidatesService';
@@ -41,47 +38,45 @@ class GetBestCandidatesService {
     experience,
     technologies,
   }: IRequest): Promise<CandidateDTO[] | undefined> {
-    try {
-      const recruitingApiData = await this.getDataFromRecruitingApiService.execute();
+    const recruitingApiData = await this.getDataFromRecruitingApiService.execute();
 
-      if (
-        recruitingApiData &&
-        recruitingApiData.candidates &&
-        recruitingApiData.jobs
-      ) {
-        await this.updateCandidatesService.execute(
-          recruitingApiData.candidates,
-        );
-
-        // TODO:
-        // await this.updateJobsService.execute(recruitingApiData.jobs);
-      }
-    } catch (error) {
-      console.log(error);
-      // TODO: handle could not get most updated data - should not stop program execution
-    } finally {
-      // TODO: Should call python api?
-      const bestCandidates = await this.calculateBestCandidatesService.execute({
-        city,
-        experience,
-        technologies,
-      });
-
-      return bestCandidates?.map(candidate => {
-        return {
-          city: candidate.city.getCityWithState(),
-          experience: candidate.getExperience(),
-          technologies: candidate.technologies.map(candidateTech => {
-            const tech = candidateTech.technology;
-
-            return {
-              name: tech.name,
-              is_main_tech: candidateTech.is_main_tech,
-            };
-          }),
-        };
-      });
+    if (
+      recruitingApiData &&
+      recruitingApiData.candidates &&
+      recruitingApiData.jobs
+    ) {
+      await this.updateCandidatesService.execute(recruitingApiData.candidates);
     }
+
+    // TODO: Should call python api?
+    const bestCandidates = await this.calculateBestCandidatesService.execute({
+      city,
+      experience,
+      technologies,
+    });
+
+    return bestCandidates?.map(candidate => {
+      return {
+        city: candidate.city.getCityWithState(),
+        experience: candidate.getExperience(),
+        technologies: candidate.technologies.map(candidateTech => {
+          const tech = candidateTech.technology;
+
+          return {
+            name: tech.name,
+            is_main_tech: candidateTech.is_main_tech,
+          };
+        }),
+      };
+    });
+
+    // try {
+    // } catch (error) {
+    //   // TODO: handle could not get most updated data - should not stop program execution
+    //   console.log(error);
+    //   // TODO: should log this problem
+    // } finally {
+    // }
   }
 }
 

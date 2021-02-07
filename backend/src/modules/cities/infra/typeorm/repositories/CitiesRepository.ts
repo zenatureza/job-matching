@@ -8,7 +8,6 @@ class CitiesRepository implements ICitiesRepository {
   constructor() {
     this.ormRepository = getRepository(City);
   }
-
   public async getCitiesByNameAndStateInitials(
     namesAndStateInitials: [string, string][],
   ): Promise<City[] | undefined> {
@@ -41,6 +40,14 @@ class CitiesRepository implements ICitiesRepository {
     });
 
     return result;
+  }
+
+  public async create(cityName: string, stateInitials: string): Promise<City> {
+    throw new Error('Method not implemented.');
+  }
+
+  public async saveAll(cities: City[]): Promise<City[]> {
+    throw new Error('Method not implemented.');
   }
 }
 

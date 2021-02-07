@@ -25,7 +25,7 @@ class City {
       return this.name;
     }
 
-    return `${this.name} - ${this.state_initials}`;
+    return `${this.name} - ${this.state_initials}`.toUpperCase();
   }
 }
 

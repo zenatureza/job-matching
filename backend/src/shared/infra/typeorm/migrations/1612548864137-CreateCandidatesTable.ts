@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export class CreateCandidatesTable1612548864137 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -8,7 +13,7 @@ export class CreateCandidatesTable1612548864137 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'varchar',
+            type: 'uuid',
             isPrimary: true,
             generationStrategy: 'uuid',
             default: 'uuid_generate_v4()',
@@ -27,6 +32,11 @@ export class CreateCandidatesTable1612548864137 implements MigrationInterface {
             type: 'int',
           },
           {
+            name: 'city_id',
+            type: 'uuid',
+            isNullable: false,
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'now()',
@@ -37,6 +47,18 @@ export class CreateCandidatesTable1612548864137 implements MigrationInterface {
             default: 'now()',
           },
         ],
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'candidates',
+      new TableForeignKey({
+        name: 'CandidateCity',
+        columnNames: ['city_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'cities',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       }),
     );
   }

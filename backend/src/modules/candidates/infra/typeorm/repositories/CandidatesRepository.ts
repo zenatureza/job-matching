@@ -20,7 +20,10 @@ class CandidatesRepository implements ICandidatesRepository {
 
   public async findByIds(ids: number[]): Promise<Candidate[] | undefined> {
     return await this.ormRepository.find({
-      recruiting_api_id: In(ids),
+      where: {
+        recruiting_api_id: In(ids),
+      },
+      relations: ['city', 'technologies', 'technologies.technology'],
     });
   }
 
@@ -32,19 +35,6 @@ class CandidatesRepository implements ICandidatesRepository {
     const cityAndState = getCityAndStateFromRecruitingApiCity(city);
     const [start, _] = getExperienceRange(experience);
 
-    // const candidateTechs = technologies.map
-
-    // return await this.ormRepository.find({
-    //   city: {
-    //     name: cityAndState[0],
-    //     state_initials: cityAndState[1],
-    //   },
-    //   start_experience_range: start,
-    //   end_experience_range: end,
-    //   // technologies: {
-
-    //   // }
-    // });
     const techNamesParam = technologies.map(tech => tech.name).join(', ');
 
     return await this.ormRepository.query(

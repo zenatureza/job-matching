@@ -1,8 +1,11 @@
 import City from '@modules/cities/infra/typeorm/entities/City.entity';
+import getExperienceRange from '@shared/utils/getExperienceRange';
+import e from 'express';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   OneToMany,
   OneToOne,
@@ -19,10 +22,11 @@ class Candidate {
   @Column()
   recruiting_api_id: number;
 
-  @Column()
+  @Column({ type: 'uuid', name: 'city_id' })
   city_id: string;
 
   @OneToOne(() => City)
+  @JoinColumn({ name: 'city_id' })
   city: City;
 
   /**
@@ -40,7 +44,14 @@ class Candidate {
     const end =
       (this.end_experience_range ? '-' + this.end_experience_range : '+') +
       ' years';
-    return `${this.start_experience_range}${end}`;
+
+    const result = `${this.start_experience_range}${end}`;
+    console.log(
+      '🚀 ~ file: Candidate.entity.ts ~ line 49 ~ Candidate ~ getExperience ~ result',
+      result,
+    );
+
+    return result;
   }
 
   @OneToMany(() => CandidateTechnology, technology => technology.candidate)
@@ -52,6 +63,29 @@ class Candidate {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  constructor(
+    experience: string,
+    city_id?: string,
+    recruiting_api_id?: number,
+  ) {
+    const [start, end] = getExperienceRange(experience);
+
+    if (end && end < start) {
+      return;
+    }
+
+    this.start_experience_range = start;
+    this.end_experience_range = end ?? 0;
+
+    if (recruiting_api_id) {
+      this.recruiting_api_id = recruiting_api_id;
+    }
+
+    if (city_id) {
+      this.city_id = city_id;
+    }
+  }
 }
 
 export default Candidate;

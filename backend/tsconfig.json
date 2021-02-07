@@ -6,12 +6,14 @@
     "rootDir": "./src",
     "strict": true,
     "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
     "allowJs": true,
     "baseUrl": "./src",
     "paths": {
-      "@modules/*": ["modules/*"],
-      "@config/*": ["config/*"],
-      "@shared/*": ["shared/*"]
+      "@modules/*": ["./modules/*"],
+      "@config/*": ["./config/*"],
+      "@shared/*": ["./shared/*"],
+      "@tests/*": ["./__tests__/*"]
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,

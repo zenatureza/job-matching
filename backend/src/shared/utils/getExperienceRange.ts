@@ -3,8 +3,8 @@ export default function (
   recruitingApiExperience: string,
 ): [number, number | null] {
   // TODO: should validate if given string contains 'years' word
-
   const rangeString = recruitingApiExperience.split(' years')[0];
+
   if (rangeString.includes('+')) {
     const start = parseInt(rangeString.split('+')[0]);
 

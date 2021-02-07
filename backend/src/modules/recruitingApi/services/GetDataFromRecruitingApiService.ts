@@ -1,25 +1,31 @@
-import AppError from '@shared/errors/AppError';
-import { recruitingApi } from '@shared/infra/http/recruitingApi';
-import RecruitingApiResponse from '@shared/infra/http/recruitingApi/RecruitingApiResponse.interface';
+import 'reflect-metadata';
+
+import IRecruitingApi from '@shared/infra/http/RecruitingApi/IRecruitingApi';
+import RecruitingApiResponse from '@shared/infra/http/RecruitingApi/RecruitingApiResponse.interface';
+import { inject, injectable } from 'tsyringe';
+import RecruitingApi from '@shared/infra/http/RecruitingApi';
 
 /**
  * This service will be used internally to update db records
  * in each recruiter request.
  */
-// TODO: Remove magic string
+@injectable()
 class GetDataFromRecruitingApiService {
-  constructor() {}
+  constructor(
+    @inject('RecruitingApi')
+    private recruitingApi: RecruitingApi,
+  ) {}
 
   public async execute(): Promise<RecruitingApiResponse | undefined> {
-    try {
-      const { data } = await recruitingApi.get<RecruitingApiResponse>(
-        '/code_challenge.json',
-      );
+    const { data } = await this.recruitingApi.getData();
 
-      return data;
-    } catch (error) {
-      throw new AppError('Could not retreive recruiting api data.');
+    if (!data) {
+      // TODO: shoud log
+      // console.log('❌ logging...');
+      return;
     }
+
+    return data;
   }
 }
 
