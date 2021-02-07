@@ -34,7 +34,7 @@ export default class TechnologiesRepositoryMock
 
   public async saveAll(technologies: Technology[]): Promise<Technology[]> {
     const createdTechsPromises = technologies.map(async tech => {
-      return await this.create({ name: tech.name });
+      return await this.create({ name: tech.name, is_main_tech: false });
     });
 
     const createdTechs = await Promise.all(createdTechsPromises);

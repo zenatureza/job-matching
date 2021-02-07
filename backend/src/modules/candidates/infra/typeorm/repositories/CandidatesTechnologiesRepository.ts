@@ -26,6 +26,28 @@ class CandidatesTechnologiesRepository
       console.log(error);
     }
   }
+
+  public async create(
+    techId: string,
+    candidateId: string,
+    recruitingApiId: number,
+    isMainTech: boolean,
+  ): Promise<CandidateTechnology> {
+    const newCandidateTechnology = this.ormRepository.create({
+      technology_id: techId,
+      candidate_id: candidateId,
+      recruiting_api_candidate_id: recruitingApiId,
+      is_main_tech: isMainTech,
+    });
+
+    return await this.ormRepository.save(newCandidateTechnology);
+  }
+
+  public async save(
+    candidatesTechnologies: CandidateTechnology[],
+  ): Promise<CandidateTechnology[]> {
+    return await this.ormRepository.save(candidatesTechnologies);
+  }
 }
 
 export default CandidatesTechnologiesRepository;

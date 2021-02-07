@@ -16,7 +16,7 @@ describe('CreateCitiesService', () => {
 
     if (createdCities) {
       expect(createdCities[0]).toHaveProperty('id');
-      expect(createdCities[0].name).toBe('Recife');
+      expect(createdCities[0].name).toBe('RECIFE');
       expect(createdCities[0].state_initials).toBe('PE');
     }
   });
@@ -24,13 +24,8 @@ describe('CreateCitiesService', () => {
   it('should not create already existing city', async () => {
     await citiesRepositoryMock.create('Recife', 'PE');
 
-    const createdCities = await createCitiesService.execute([
-      'Santa Maria - RS',
-    ]);
+    const createdCities = await createCitiesService.execute(['Recife - PE']);
 
-    if (createdCities) {
-      expect(createdCities[0].name).not.toBe('Recife');
-      expect(createdCities[0].name).not.toBe('PE');
-    }
+    expect(createdCities).toBeUndefined();
   });
 });

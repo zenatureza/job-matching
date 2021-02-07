@@ -18,18 +18,16 @@ export default class CandidatesController {
     if (!city || !experience || !technologies)
       return response.status(400).json();
 
-    let params: CandidateDTO = {
+    let params = {
       city: city?.toString() ?? '',
       experience: experience?.toString() ?? '',
-      technologies: [],
+      technologiesNames: [] as string[],
     };
     if (Array.isArray(technologies)) {
       const technologiesArray = technologies as Array<string>;
 
       technologiesArray.forEach(tech => {
-        params.technologies.push({
-          name: tech,
-        });
+        params.technologiesNames.push(tech);
       });
     }
 

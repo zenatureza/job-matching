@@ -24,6 +24,8 @@ export default class CitiesRepositoryMock implements ICitiesRepository {
   public async getCitiesByNameAndStateInitials(
     namesAndStateInitials: [string, string][],
   ): Promise<City[] | undefined> {
+    // console.log(this.cities);
+
     return this.cities.filter(city => {
       const found = namesAndStateInitials.find(
         nameAndState =>

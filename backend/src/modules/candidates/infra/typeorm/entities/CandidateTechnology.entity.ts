@@ -45,11 +45,12 @@ class CandidateTechnology {
   updated_at: Date;
 
   constructor(
-    technology: Technology,
+    // technology: Technology,
+    technology_id: string,
     recruiting_api_candidate_id: number,
     candidate_id?: string,
   ) {
-    this.technology = technology;
+    this.technology_id = technology_id;
     this.recruiting_api_candidate_id = recruiting_api_candidate_id;
 
     if (candidate_id) {

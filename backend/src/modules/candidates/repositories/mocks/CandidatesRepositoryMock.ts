@@ -7,7 +7,7 @@ import ICandidatesRepository from '../ICandidatesRepository';
 export default class CandidatesRepositoryMock implements ICandidatesRepository {
   private candidates: Candidate[] = [];
 
-  public async save(candidates: Candidate[]): Promise<Candidate[] | undefined> {
+  public async save(candidates: Candidate[]): Promise<Candidate[]> {
     const createdCandidatesPromises = candidates.map(async candidate => {
       return await this.create({
         experience: candidate.getExperience(),

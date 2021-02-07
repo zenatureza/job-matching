@@ -13,5 +13,26 @@ describe('getExperienceRange', () => {
     expect(end?.toString()).toBe(endStr);
   });
 
-  // TODO: should throw an apperror when experience string format is invalid
+  it('should return invalid tuple when experience range is invalid', () => {
+    const startStr = '4';
+
+    const recruitingApiExperience = `${startStr} years`;
+
+    const [start, end] = getExperienceRange(recruitingApiExperience);
+
+    expect(start.toString()).not.toBe(startStr);
+    expect(start).toBe(0);
+    expect(end).toBe(0);
+  });
+
+  it('should return invalid tuple when years word isnt provided', () => {
+    const startStr = '4';
+
+    const recruitingApiExperience = `${startStr}`;
+
+    const [start, end] = getExperienceRange(recruitingApiExperience);
+
+    expect(start).toBe(0);
+    expect(end).toBe(0);
+  });
 });

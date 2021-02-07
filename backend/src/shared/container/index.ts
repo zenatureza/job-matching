@@ -3,9 +3,13 @@ import CandidatesTechnologiesRepository from '@modules/candidates/infra/typeorm/
 import ICandidatesRepository from '@modules/candidates/repositories/ICandidatesRepository';
 import ICandidatesTechnologiesRepository from '@modules/candidates/repositories/ICandidatesTechnologiesRepository';
 import CalculateBestCandidatesService from '@modules/candidates/services/CalculateBestCandidatesService';
+import CreateOrUpdateCandidatesService from '@modules/candidates/services/CreateOrUpdateCandidatesService';
+import SaveCandidatesService from '@modules/candidates/services/SaveCandidatesService';
 import UpdateCandidatesService from '@modules/candidates/services/UpdateCandidatesService';
+import UpdateCandidatesTechnologiesService from '@modules/candidates/services/UpdateCandidatesTechnologiesService';
 import CitiesRepository from '@modules/cities/infra/typeorm/repositories/CitiesRepository';
 import ICitiesRepository from '@modules/cities/repositories/ICitiesRepository';
+import CreateCitiesService from '@modules/cities/services/CreateCitiesService';
 import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import TechnologiesRepository from '@modules/technologies/infra/typeorm/repositories/TechnologiesRepository';
 import ITechnologiesRepository from '@modules/technologies/repositories/ITechnologiesRepository';
@@ -48,9 +52,9 @@ container.registerSingleton<GetDataFromRecruitingApiService>(
   GetDataFromRecruitingApiService,
 );
 
-container.registerSingleton<UpdateCandidatesService>(
-  'UpdateCandidatesService',
-  UpdateCandidatesService,
+container.registerSingleton<SaveCandidatesService>(
+  'SaveCandidatesService',
+  SaveCandidatesService,
 );
 
 container.registerSingleton<CalculateBestCandidatesService>(
@@ -63,4 +67,22 @@ container.registerSingleton<CreateTechnologiesService>(
   CreateTechnologiesService,
 );
 
-// container.registerSingleton<typeof axios>('axios', typeof axios);
+container.registerSingleton<UpdateCandidatesService>(
+  'UpdateCandidatesService',
+  UpdateCandidatesService,
+);
+
+container.registerSingleton<CreateOrUpdateCandidatesService>(
+  'CreateCandidatesService',
+  CreateOrUpdateCandidatesService,
+);
+
+container.registerSingleton<CreateCitiesService>(
+  'CreateCitiesService',
+  CreateCitiesService,
+);
+
+container.registerSingleton<UpdateCandidatesTechnologiesService>(
+  'UpdateCandidatesTechnologiesService',
+  UpdateCandidatesTechnologiesService,
+);

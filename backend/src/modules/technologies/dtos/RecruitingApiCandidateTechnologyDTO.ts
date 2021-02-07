@@ -1,4 +1,4 @@
 export default interface RecruitingApiCandidateTechnologyDTO {
   name: string;
-  is_main_tech?: boolean;
+  is_main_tech: boolean;
 }

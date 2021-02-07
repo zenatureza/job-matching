@@ -46,10 +46,6 @@ class Candidate {
       ' years';
 
     const result = `${this.start_experience_range}${end}`;
-    console.log(
-      '🚀 ~ file: Candidate.entity.ts ~ line 49 ~ Candidate ~ getExperience ~ result',
-      result,
-    );
 
     return result;
   }
@@ -69,14 +65,7 @@ class Candidate {
     city_id?: string,
     recruiting_api_id?: number,
   ) {
-    const [start, end] = getExperienceRange(experience);
-
-    if (end && end < start) {
-      return;
-    }
-
-    this.start_experience_range = start;
-    this.end_experience_range = end ?? 0;
+    this.setExperienceRange(experience);
 
     if (recruiting_api_id) {
       this.recruiting_api_id = recruiting_api_id;
@@ -85,6 +74,22 @@ class Candidate {
     if (city_id) {
       this.city_id = city_id;
     }
+  }
+
+  public setExperienceRange(experience: string) {
+    if (!experience) return;
+
+    const [start, end] = getExperienceRange(experience);
+
+    // experience invalid
+    // 0 <==> '+', e.g. '4+ years',
+    // start = 4, end = 0 (+)
+    if (end && end !== 0 && end < start) {
+      return;
+    }
+
+    this.start_experience_range = start;
+    this.end_experience_range = end;
   }
 }
 

@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import getCityWithState from '@shared/utils/getCityWithState';
 
 @Entity('cities')
 class City {
@@ -20,12 +21,13 @@ class City {
 
   // e.g. name = 'São Paulo', state.initials = 'SP' -> 'São Paulo - SP'
   public getCityWithState() {
-    // if remote this.state is null
-    if (!this.state_initials) {
-      return this.name;
-    }
+    // // if remote this.state is null
+    // if (!this.state_initials) {
+    //   return this.name;
+    // }
 
-    return `${this.name} - ${this.state_initials}`.toUpperCase();
+    // return `${this.name} - ${this.state_initials}`.toUpperCase();
+    return getCityWithState(this.name, this.state_initials);
   }
 }
 

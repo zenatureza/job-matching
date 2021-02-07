@@ -10,24 +10,28 @@ class CreateCitiesService {
     private readonly citiesRepository: ICitiesRepository,
   ) {}
 
-  public async execute(citiesNames: string[]): Promise<City[] | undefined> {
+  public async execute(
+    recruitingApiCitiesNames: string[],
+  ): Promise<City[] | undefined> {
     // check for existing ones
     const existingCities = await this.citiesRepository.getCitiesByNameAndStateInitials(
       Array.from(
-        citiesNames.map(city => getCityAndStateFromRecruitingApiCity(city)),
+        recruitingApiCitiesNames.map(city =>
+          getCityAndStateFromRecruitingApiCity(city),
+        ),
       ),
     );
 
     let citiesNamesToCreate: string[];
 
     if (!existingCities || existingCities.length <= 0) {
-      citiesNamesToCreate = citiesNames;
+      citiesNamesToCreate = recruitingApiCitiesNames;
     } else {
-      citiesNamesToCreate = citiesNames.filter(
+      citiesNamesToCreate = recruitingApiCitiesNames.filter(
         recruitingApiCityName =>
           !existingCities
-            .map(existingTech => existingTech.name)
-            .includes(recruitingApiCityName),
+            .map(existingCity => existingCity.getCityWithState().toUpperCase())
+            .includes(recruitingApiCityName.toUpperCase()),
       );
     }
 
@@ -39,8 +43,8 @@ class CreateCitiesService {
 
       const cityAndState = getCityAndStateFromRecruitingApiCity(cityName);
 
-      newCity.name = cityAndState[0];
-      newCity.state_initials = cityAndState[1];
+      newCity.name = cityAndState[0].toUpperCase();
+      newCity.state_initials = cityAndState[1].toUpperCase();
 
       return newCity;
     });

@@ -3,7 +3,7 @@ import RecruitingApiCandidateTechnologyDTO from '@modules/technologies/dtos/Recr
 import { inject, injectable } from 'tsyringe';
 import CandidateDTO from '../dtos/CandidateDTO';
 import CalculateBestCandidatesService from './CalculateBestCandidatesService';
-import UpdateCandidatesService from './UpdateCandidatesService';
+import SaveCandidatesService from './SaveCandidatesService';
 
 // TODO: should be this format?
 interface IRequest {
@@ -14,7 +14,8 @@ interface IRequest {
   experience: string;
 
   // TODO: Could be { tech_id, is_main_tech }
-  technologies: RecruitingApiCandidateTechnologyDTO[];
+  // technologies: RecruitingApiCandidateTechnologyDTO[];
+  technologiesNames: string[];
 }
 
 /**
@@ -26,8 +27,8 @@ class GetBestCandidatesService {
     @inject('GetDataFromRecruitingApiService')
     private getDataFromRecruitingApiService: GetDataFromRecruitingApiService,
 
-    @inject('UpdateCandidatesService')
-    private updateCandidatesService: UpdateCandidatesService,
+    @inject('SaveCandidatesService')
+    private saveCandidatesService: SaveCandidatesService,
 
     @inject('CalculateBestCandidatesService')
     private calculateBestCandidatesService: CalculateBestCandidatesService,
@@ -36,7 +37,7 @@ class GetBestCandidatesService {
   public async execute({
     city,
     experience,
-    technologies,
+    technologiesNames,
   }: IRequest): Promise<CandidateDTO[] | undefined> {
     const recruitingApiData = await this.getDataFromRecruitingApiService.execute();
 
@@ -45,30 +46,32 @@ class GetBestCandidatesService {
       recruitingApiData.candidates &&
       recruitingApiData.jobs
     ) {
-      await this.updateCandidatesService.execute(recruitingApiData.candidates);
+      await this.saveCandidatesService.execute(recruitingApiData.candidates);
     }
 
+    return;
+
     // TODO: Should call python api?
-    const bestCandidates = await this.calculateBestCandidatesService.execute({
-      city,
-      experience,
-      technologies,
-    });
+    // const bestCandidates = await this.calculateBestCandidatesService.execute({
+    //   city,
+    //   experience,
+    //   technologies,
+    // });
 
-    return bestCandidates?.map(candidate => {
-      return {
-        city: candidate.city.getCityWithState(),
-        experience: candidate.getExperience(),
-        technologies: candidate.technologies.map(candidateTech => {
-          const tech = candidateTech.technology;
+    // return bestCandidates?.map(candidate => {
+    //   return {
+    //     city: candidate.city.getCityWithState(),
+    //     experience: candidate.getExperience(),
+    //     technologies: candidate.technologies.map(candidateTech => {
+    //       const tech = candidateTech.technology;
 
-          return {
-            name: tech.name,
-            is_main_tech: candidateTech.is_main_tech,
-          };
-        }),
-      };
-    });
+    //       return {
+    //         name: tech.name,
+    //         is_main_tech: candidateTech.is_main_tech,
+    //       };
+    //     }),
+    //   };
+    // });
 
     // try {
     // } catch (error) {

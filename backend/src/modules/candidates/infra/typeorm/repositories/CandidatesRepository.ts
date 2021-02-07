@@ -14,7 +14,7 @@ class CandidatesRepository implements ICandidatesRepository {
 
   public async save(
     recruitingApiCandidates: Candidate[],
-  ): Promise<Candidate[] | undefined> {
+  ): Promise<Candidate[]> {
     return await this.ormRepository.save(recruitingApiCandidates);
   }
 
