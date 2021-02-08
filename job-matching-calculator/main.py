@@ -1,6 +1,7 @@
 import psycopg2 as pg
 import pandas.io.sql as psql
 import operator
+from flask import Flask, jsonify
 
 connection = pg.connect(
     "host=localhost dbname=jobmatching user=postgres password=postgres")
@@ -78,10 +79,23 @@ def get_best_candidates():
             else:
                 candidate_data['score'] = candidate_data['score'] + 0.1
 
-    return candidates_techs_dict
+    return sorted(candidates_techs_dict.values(),
+                  key=lambda candidate: candidate['score'], reverse=True)
 
 
-result = sorted(get_best_candidates().values(),
-                key=lambda candidate: candidate['score'], reverse=True)
+server = Flask(__name__)
 
-print(result[:5])
+
+@server.route("/")
+def get():
+    best_candidates = get_best_candidates()[:5]
+
+    response = {
+        'candidates': best_candidates
+    }
+
+    return jsonify(response)
+
+
+if __name__ == "__main__":
+    server.run(host='0.0.0.0')

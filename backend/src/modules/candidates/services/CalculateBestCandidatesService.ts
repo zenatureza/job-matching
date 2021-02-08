@@ -1,6 +1,7 @@
 import RecruitingApiCandidateTechnologyDTO from '@modules/technologies/dtos/RecruitingApiCandidateTechnologyDTO';
 import TechnologiesRepository from '@modules/technologies/infra/typeorm/repositories/TechnologiesRepository';
 import { inject, injectable } from 'tsyringe';
+import JobMatchingCalculatorHttpClient from '../infra/http/JobMatchingCalculatorHttpClient';
 import Candidate from '../infra/typeorm/entities/Candidate.entity';
 import CandidatesRepository from '../infra/typeorm/repositories/CandidatesRepository';
 
@@ -27,6 +28,9 @@ class CalculateBestCandidatesService {
 
     @inject('TechnologiesRepository')
     private technologiesRepository: TechnologiesRepository,
+
+    @inject('JobMatchingCalculatorHttpClient')
+    private jobMatchingCalculatorHttpClient: JobMatchingCalculatorHttpClient,
   ) {}
 
   public async execute({
@@ -35,13 +39,17 @@ class CalculateBestCandidatesService {
     technologies,
   }: IRequest): Promise<Candidate[] | undefined> {
     // 1. should try to retreive candidates with the request parameters
-    const candidatesInCityWithExperience = await this.candidatesRepository.findByFilters(
-      city,
-      experience,
-      technologies,
-    );
+    // const candidatesInCityWithExperience = await this.candidatesRepository.findByFilters(
+    //   city,
+    //   experience,
+    //   technologies,
+    // );
 
-    return candidatesInCityWithExperience;
+    // return candidatesInCityWithExperience;
+    const response = await this.jobMatchingCalculatorHttpClient.getData();
+    console.log(response);
+
+    return;
   }
 }
 

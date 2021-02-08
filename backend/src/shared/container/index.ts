@@ -1,3 +1,4 @@
+import JobMatchingCalculatorHttpClient from '@modules/candidates/infra/http/JobMatchingCalculatorHttpClient';
 import CandidatesRepository from '@modules/candidates/infra/typeorm/repositories/CandidatesRepository';
 import CandidatesTechnologiesRepository from '@modules/candidates/infra/typeorm/repositories/CandidatesTechnologiesRepository';
 import ICandidatesRepository from '@modules/candidates/repositories/ICandidatesRepository';
@@ -26,6 +27,11 @@ container.registerInstance<AxiosInstance>(
 );
 
 container.registerSingleton<RecruitingApi>('RecruitingApi', RecruitingApi);
+
+container.registerSingleton<JobMatchingCalculatorHttpClient>(
+  'JobMatchingCalculatorHttpClient',
+  JobMatchingCalculatorHttpClient,
+);
 
 container.registerSingleton<ICandidatesRepository>(
   'CandidatesRepository',

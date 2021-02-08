@@ -41,13 +41,28 @@ class GetBestCandidatesService {
   }: IRequest): Promise<CandidateDTO[] | undefined> {
     const recruitingApiData = await this.getDataFromRecruitingApiService.execute();
 
-    if (
-      recruitingApiData &&
-      recruitingApiData.candidates &&
-      recruitingApiData.jobs
-    ) {
-      await this.saveCandidatesService.execute(recruitingApiData.candidates);
-    }
+    // if (
+    //   recruitingApiData &&
+    //   recruitingApiData.candidates &&
+    //   recruitingApiData.jobs
+    // ) {
+    //   await this.saveCandidatesService.execute(recruitingApiData.candidates);
+    // }
+    const technologies: RecruitingApiCandidateTechnologyDTO[] = technologiesNames.map(
+      tech => {
+        return {
+          name: tech,
+          is_main_tech: false,
+        };
+      },
+    );
+
+    const bestCandidates = await this.calculateBestCandidatesService.execute({
+      city,
+      experience,
+      technologies,
+    });
+    console.log(bestCandidates);
 
     return;
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import CandidatesController from '../controllers/CandidatesController';
+import CandidatesController from '../http/controllers/CandidatesController';
 
 const candidatesRouter = Router();
 const candidatesController = new CandidatesController();
