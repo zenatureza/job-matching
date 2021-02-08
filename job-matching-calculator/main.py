@@ -1,29 +1,18 @@
 import psycopg2 as pg
-import pandas as pd
 import pandas.io.sql as psql
-import numpy as np
+import operator
 
 connection = pg.connect(
     "host=localhost dbname=jobmatching user=postgres password=postgres")
 dataframe = psql.read_sql('SELECT * FROM candidates_view', connection)
 candidates = psql.read_sql_query('select * from candidates_view', connection)
 
-
-def get_candidates_techs_rows(candidate_id):
-    mask = candidates['candidate_id'] == candidate_id
-    return candidates[mask]
-
-
 candidates_techs_dict = {}
-
-techs_ids = []
 
 for _, row in candidates.iterrows():
     candidate_id = row['candidate_id']
     tech_id = row['technology_id']
     is_main_tech = row['is_main_tech']
-
-    techs_ids.append(tech_id)
 
     if candidate_id not in candidates_techs_dict:
         candidates_techs_dict[candidate_id] = {
@@ -31,21 +20,12 @@ for _, row in candidates.iterrows():
             'state_initials': row['state_initials'],
             'start_experience_range': row['start_experience_range'],
             'end_experience_range': row['end_experience_range'],
-            'technologies': [
-                {
-                    'tech_id': tech_id,
-                    'is_main_tech': is_main_tech
-                }
-            ],
-            'score': 0
+            'technologies': {},
+            'score': 0,
+            'candidate_id': candidate_id
         }
-    else:
-        candidates_techs_dict[candidate_id]['technologies'].append(
-            {
-                'tech_id': tech_id,
-                'is_main_tech': is_main_tech
-            }
-        )
+
+    candidates_techs_dict[candidate_id]['technologies'][tech_id] = is_main_tech
 
 
 def get_best_candidates():
@@ -54,18 +34,21 @@ def get_best_candidates():
     start_experience_range = 4
     end_experience_range = 5
     technologies = [
-        'b2d2b12c-9759-4077-a9aa-d0156ed68ba4'
+        'b2d2b12c-9759-4077-a9aa-d0156ed68ba4',
+        '770d4468-83f1-427e-9bba-52b78acfcfb5'
     ]
-    state_initials = 'RJ'
+    state_initials = 'SC'
 
-    for candidate_data in candidates_techs_dict.items():
+    for key in candidates_techs_dict.keys():
+        candidate_data = candidates_techs_dict[key]
+
         # priorizes candidates in same city
         if candidate_data['city_id'] == city_id:
-            candidate_data['score'] = candidate_data['score'] + 1
+            candidate_data['score'] = candidate_data['score'] + 3
 
         # candidates from same state are also good options
         elif candidate_data['state_initials'] == state_initials:
-            candidate_data['score'] = candidate_data['score'] + 0.1
+            candidate_data['score'] = candidate_data['score'] + 2
 
         # priorizes candidates with exact same experience range
         if (candidate_data['start_experience_range'] == start_experience_range and
@@ -76,47 +59,29 @@ def get_best_candidates():
         elif (candidate_data['start_experience_range'] == start_experience_range and
                 (candidate_data['end_experience_range'] > end_experience_range or
                     candidate_data['end_experience_range'] == 0)):
-            candidate_data['score'] = candidate_data['score'] + 1.5
+            candidate_data['score'] = candidate_data['score'] + 1
 
         # candidate has a wider range
         elif (candidate_data['start_experience_range'] > start_experience_range):
             candidate_data['score'] = candidate_data['score'] + 1
 
-        # TODO: Alterar o array de tecnologias do cara pra ser um dicionário
         for tech in technologies:
             if tech in candidate_data['technologies']:
-                candidate_data['score'] = candidate_data['score'] + 2
+                candidate_data['score'] = candidate_data['score'] + 3.5
 
-                # if candidate_data['technologies'][tech]['is_main_tech']
+                is_main_tech = candidate_data['technologies'][tech]
 
+                if is_main_tech == True:
+                    candidate_data['score'] = candidate_data['score'] + 1
 
-""" 
-Creates pandas dataframe, with the following columns:
-candidate_id | city_id | state_initials | start_experience_range | end_experience_range | tech_id_1 | tech_id_2 | ... | tech_id_n-1
-"""
-# columns = ['candidate_id', 'city_id', 'state_initials',
-#            'start_experience_range', 'end_experience_range']
-# unique_techs_ids = list(dict.fromkeys(techs_ids))
-# columns.extend(unique_techs_ids)
+            # candidates that know more languages score better
+            else:
+                candidate_data['score'] = candidate_data['score'] + 0.1
 
-# data = np.zeros((len(candidates_techs_dict), 156))
-# df = pd.DataFrame(data, columns=columns)
-
-# for i, candidate_id in enumerate(candidates_techs_dict):
-#     df.loc['candidate_id', i] = candidate_id
-#     df.loc['city_id', i] = candidates_techs_dict[candidate_id]['city_id']
-#     df.loc['state_initials',
-#            i] = candidates_techs_dict[candidate_id]['state_initials']
-#     df.loc['start_experience_range',
-#            i] = candidates_techs_dict[candidate_id]['start_experience_range']
-#     df.loc['end_experience_range',
-#            i] = candidates_techs_dict[candidate_id]['end_experience_range']
-
-#     for candidate_tech in candidates_techs_dict[candidate_id]['technologies']:
-#         if candidate_tech['tech_id'] in columns:
-#             df.loc[candidate_tech['tech_id'], i] = 1
-#         else:
-#             df.loc[candidate_tech['tech_id'], i] = 0
+    return candidates_techs_dict
 
 
-# print(df['candidate_id'].values)
+result = sorted(get_best_candidates().values(),
+                key=lambda candidate: candidate['score'], reverse=True)
+
+print(result[:5])
