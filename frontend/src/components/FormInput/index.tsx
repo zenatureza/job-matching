@@ -1,11 +1,5 @@
 import { useField } from '@unform/core';
-import React, { InputHTMLAttributes, useEffect, useRef, useState } from 'react';
-import { FormGroup } from 'react-bootstrap';
-import { ISearchRequest } from '../../interfaces/ISearchRequest.interface';
-import { ISearchResponse } from '../../interfaces/ISearchResponse.interface';
-import { api } from '../../services/api';
-
-import { Input } from './styles';
+import React, { InputHTMLAttributes, useEffect, useRef } from 'react';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   // searchUrl?: string;
@@ -53,7 +47,8 @@ const FormInput: React.FC<Props> = ({ name, ...rest }: Props) => {
   //   </FormGroup>
   // );
   const inputRef = useRef(null);
-  const { fieldName, defaultValue, registerField, error } = useField(name);
+  // TODO: get error
+  const { fieldName, defaultValue, registerField } = useField(name);
 
   useEffect(() => {
     registerField({

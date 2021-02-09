@@ -10,7 +10,8 @@ interface Props extends AsyncProps<OptionTypeBase, boolean> {
 
 const AsyncFormSelect: React.FC<Props> = ({ name, ...rest }) => {
   const selectRef = useRef(null);
-  const { fieldName, defaultValue, registerField, error } = useField(name);
+  // TODO: get error
+  const { fieldName, defaultValue, registerField } = useField(name);
 
   const [selectedOption, setSelectedOption] = useState<
     ValueType<OptionType, false>
