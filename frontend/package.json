@@ -10,7 +10,10 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
+    "@unform/core": "^2.1.5",
+    "@unform/web": "^2.1.5",
     "axios": "^0.21.1",
+    "faker": "^5.3.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-bootstrap-typeahead": "^5.1.4",
@@ -21,10 +24,12 @@
     "react-select": "^4.0.2",
     "styled-components": "^5.2.1",
     "typescript": "^4.0.3",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "yup": "^0.32.8"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/faker": "^5.1.6",
     "@types/react-bootstrap": "^0.32.25",
     "@types/react-bootstrap-typeahead": "^5.1.1",
     "@types/react-icons": "^3.0.0",

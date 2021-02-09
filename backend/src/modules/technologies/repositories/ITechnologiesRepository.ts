@@ -7,4 +7,5 @@ export default interface ITechnologiesRepository {
   create(
     technologyDTO: RecruitingApiCandidateTechnologyDTO,
   ): Promise<Technology>;
+  getAll(): Promise<Technology[]>;
 }

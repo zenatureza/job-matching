@@ -20,9 +20,16 @@ import axios, { AxiosInstance, AxiosStatic } from 'axios';
 import { container } from 'tsyringe';
 
 container.registerInstance<AxiosInstance>(
-  'axios',
+  'recruitingApiHttpClient',
   axios.create({
     baseURL: 'https://geekhunter-recruiting.s3.amazonaws.com',
+  }),
+);
+
+container.registerInstance<AxiosInstance>(
+  'jobMatchingCalculatorHttpClient',
+  axios.create({
+    baseURL: 'http://localhost:5000',
   }),
 );
 

@@ -1,21 +1,28 @@
+import ICitiesRepository from '@modules/cities/repositories/ICitiesRepository';
 import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import RecruitingApiCandidateTechnologyDTO from '@modules/technologies/dtos/RecruitingApiCandidateTechnologyDTO';
+import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import CandidateDTO from '../dtos/CandidateDTO';
+import JobMatchingCalculatorResponse from '../infra/http/JobMatchingCalculatorHttpClient/JobMatchingCalculatorResponse.interface';
 import CalculateBestCandidatesService from './CalculateBestCandidatesService';
 import SaveCandidatesService from './SaveCandidatesService';
 
 // TODO: should be this format?
 interface IRequest {
   // TODO: can be a number
-  city: string;
+  cityId: string;
 
   // TODO: Can be a range (from = 4, to = 5 <==> 4-5 years)
-  experience: string;
+  // experience: string;
+
+  startExperienceRange: number;
+
+  endExperienceRange: number;
 
   // TODO: Could be { tech_id, is_main_tech }
   // technologies: RecruitingApiCandidateTechnologyDTO[];
-  technologiesNames: string[];
+  technologiesIds: string[];
 }
 
 /**
@@ -32,69 +39,41 @@ class GetBestCandidatesService {
 
     @inject('CalculateBestCandidatesService')
     private calculateBestCandidatesService: CalculateBestCandidatesService,
+
+    @inject('CitiesRepository')
+    private readonly citiesRepository: ICitiesRepository,
   ) {}
 
   public async execute({
-    city,
-    experience,
-    technologiesNames,
-  }: IRequest): Promise<CandidateDTO[] | undefined> {
+    cityId,
+    startExperienceRange,
+    endExperienceRange,
+    technologiesIds,
+  }: IRequest): Promise<JobMatchingCalculatorResponse> {
     const recruitingApiData = await this.getDataFromRecruitingApiService.execute();
 
-    // if (
-    //   recruitingApiData &&
-    //   recruitingApiData.candidates &&
-    //   recruitingApiData.jobs
-    // ) {
-    //   await this.saveCandidatesService.execute(recruitingApiData.candidates);
-    // }
-    const technologies: RecruitingApiCandidateTechnologyDTO[] = technologiesNames.map(
-      tech => {
-        return {
-          name: tech,
-          is_main_tech: false,
-        };
-      },
-    );
+    if (
+      recruitingApiData &&
+      recruitingApiData.candidates &&
+      recruitingApiData.jobs
+    ) {
+      await this.saveCandidatesService.execute(recruitingApiData.candidates);
+    }
+
+    const city = await this.citiesRepository.findById(cityId);
+    if (!city) {
+      throw new AppError('Couldnt find specified city', 400);
+    }
 
     const bestCandidates = await this.calculateBestCandidatesService.execute({
-      city,
-      experience,
-      technologies,
+      cityId,
+      startExperienceRange,
+      endExperienceRange,
+      technologiesIds,
+      stateInitials: city.state_initials,
     });
-    console.log(bestCandidates);
 
-    return;
-
-    // TODO: Should call python api?
-    // const bestCandidates = await this.calculateBestCandidatesService.execute({
-    //   city,
-    //   experience,
-    //   technologies,
-    // });
-
-    // return bestCandidates?.map(candidate => {
-    //   return {
-    //     city: candidate.city.getCityWithState(),
-    //     experience: candidate.getExperience(),
-    //     technologies: candidate.technologies.map(candidateTech => {
-    //       const tech = candidateTech.technology;
-
-    //       return {
-    //         name: tech.name,
-    //         is_main_tech: candidateTech.is_main_tech,
-    //       };
-    //     }),
-    //   };
-    // });
-
-    // try {
-    // } catch (error) {
-    //   // TODO: handle could not get most updated data - should not stop program execution
-    //   console.log(error);
-    //   // TODO: should log this problem
-    // } finally {
-    // }
+    return bestCandidates;
   }
 }
 

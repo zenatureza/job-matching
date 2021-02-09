@@ -7,7 +7,7 @@ import RecruitingApiResponse from './RecruitingApiResponse.interface';
 @injectable()
 export default class RecruitingApi implements IRecruitingApi {
   constructor(
-    @inject('axios')
+    @inject('recruitingApiHttpClient')
     private readonly httpClient: AxiosInstance,
   ) {}
 

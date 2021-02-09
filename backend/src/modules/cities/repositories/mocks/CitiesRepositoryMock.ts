@@ -46,4 +46,14 @@ export default class CitiesRepositoryMock implements ICitiesRepository {
 
     return createdCities;
   }
+
+  public async findByFilter(filter: string) {
+    return this.cities.filter(city =>
+      city.getCityWithState().includes(filter.toUpperCase()),
+    );
+  }
+
+  public async findById(cityId: string): Promise<City | undefined> {
+    return this.cities.find(city => city.id === cityId);
+  }
 }

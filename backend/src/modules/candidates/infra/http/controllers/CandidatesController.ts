@@ -1,6 +1,4 @@
-import CandidateDTO from '@modules/candidates/dtos/CandidateDTO';
 import GetBestCandidatesService from '@modules/candidates/services/GetBestCandidatesService';
-import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
@@ -13,21 +11,31 @@ export default class CandidatesController {
   public async get(request: Request, response: Response): Promise<Response> {
     const service = container.resolve(GetBestCandidatesService);
 
-    const { city, experience, technologies } = request.query;
+    const {
+      cityId,
+      startExperienceRange,
+      endExperienceRange,
+      technologiesIds,
+    } = request.query;
 
-    if (!city || !experience || !technologies)
+    if (!cityId || !startExperienceRange || !technologiesIds)
       return response.status(400).json();
 
     let params = {
-      city: city?.toString() ?? '',
-      experience: experience?.toString() ?? '',
-      technologiesNames: [] as string[],
+      cityId: cityId?.toString() ?? '',
+      startExperienceRange: startExperienceRange
+        ? parseInt(startExperienceRange as string)
+        : 0,
+      endExperienceRange: endExperienceRange
+        ? parseInt(endExperienceRange as string)
+        : 0,
+      technologiesIds: [] as string[],
     };
-    if (Array.isArray(technologies)) {
-      const technologiesArray = technologies as Array<string>;
+    if (Array.isArray(technologiesIds)) {
+      const technologiesIdsArray = technologiesIds as Array<string>;
 
-      technologiesArray.forEach(tech => {
-        params.technologiesNames.push(tech);
+      technologiesIdsArray.forEach(techId => {
+        params.technologiesIds.push(techId);
       });
     }
 

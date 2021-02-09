@@ -41,4 +41,8 @@ export default class TechnologiesRepositoryMock
 
     return createdTechs;
   }
+
+  public async getAll() {
+    return this.technologies;
+  }
 }

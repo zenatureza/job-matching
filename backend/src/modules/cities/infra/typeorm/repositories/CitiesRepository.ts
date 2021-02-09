@@ -1,5 +1,5 @@
 import ICitiesRepository from '@modules/cities/repositories/ICitiesRepository';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, ILike, Raw, Repository } from 'typeorm';
 import City from '../entities/City.entity';
 
 class CitiesRepository implements ICitiesRepository {
@@ -11,23 +11,6 @@ class CitiesRepository implements ICitiesRepository {
   public async getCitiesByNameAndStateInitials(
     namesAndStateInitials: [string, string][],
   ): Promise<City[] | undefined> {
-    /**
-     * e.g. nameAndStateInitials = [['Santiago', 'SC'], ['Santiago', 'RS']]
-     * SELECT *
-     * FROM 'cities'
-     * WHERE ('name' = 'Santiago' AND 'state_initials' = 'SC')
-     * OR ('name' = 'Santiago' AND 'state_initials' = 'RS')
-     */
-
-    // const result = await this.ormRepository.find({
-    //   where: [
-    //     namesAndStateInitials
-    //       .filter(item => item[0] && item[1])
-    //       .map(item => {
-    //         return { name: item[0], state_initials: item[1] };
-    //       }),
-    //   ],
-    // });
     const queryParams = namesAndStateInitials.map(nameAndState => {
       return {
         name: nameAndState[0].toUpperCase(),
@@ -48,6 +31,24 @@ class CitiesRepository implements ICitiesRepository {
 
   public async saveAll(cities: City[]): Promise<City[]> {
     throw new Error('Method not implemented.');
+  }
+
+  public async findByFilter(filter: string): Promise<City[]> {
+    const result = await this.ormRepository.find({
+      where: {
+        // name: ILike(filter),
+        name: Raw(alias => `${alias} ILIKE '%${filter}%'`),
+      },
+    });
+    console.log(result);
+
+    return result;
+  }
+
+  public async findById(cityId: string) {
+    return await this.ormRepository.findOne({
+      id: cityId,
+    });
   }
 }
 

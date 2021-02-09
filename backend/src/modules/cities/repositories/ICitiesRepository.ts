@@ -6,4 +6,6 @@ export default interface ICitiesRepository {
     namesAndStateInitials: [string, string][],
   ): Promise<City[] | undefined>;
   saveAll(cities: City[]): Promise<City[]>;
+  findByFilter(filter: string): Promise<City[]>;
+  findById(cityId: string): Promise<City | undefined>;
 }

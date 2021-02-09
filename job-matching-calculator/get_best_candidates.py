@@ -1,44 +1,56 @@
+import os
+from dotenv import load_dotenv
 import psycopg2 as pg
 import pandas.io.sql as psql
-import operator
-from flask import Flask, jsonify
 
-connection = pg.connect(
-    "host=localhost dbname=jobmatching user=postgres password=postgres")
+load_dotenv()
+
+POSTGRES_DATABASE = os.environ.get('POSTGRES_DATABASE')
+POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.environ.get('POSTGRES_HOST')
+
+CONNECTION_STRING = 'host={host} dbname={dbname} user={user} password={password}'.format(
+    host=POSTGRES_HOST, dbname=POSTGRES_DATABASE, user=POSTGRES_USER, password=POSTGRES_PASSWORD)
+print(CONNECTION_STRING)
+
+connection = pg.connect(CONNECTION_STRING)
 dataframe = psql.read_sql('SELECT * FROM candidates_view', connection)
 candidates = psql.read_sql_query('select * from candidates_view', connection)
 
-candidates_techs_dict = {}
 
-for _, row in candidates.iterrows():
-    candidate_id = row['candidate_id']
-    tech_id = row['technology_id']
-    is_main_tech = row['is_main_tech']
+def get_candidates_techs_dict():
+    candidates_techs_dict = {}
 
-    if candidate_id not in candidates_techs_dict:
-        candidates_techs_dict[candidate_id] = {
-            'city_id': row['city_id'],
-            'state_initials': row['state_initials'],
-            'start_experience_range': row['start_experience_range'],
-            'end_experience_range': row['end_experience_range'],
-            'technologies': {},
-            'score': 0,
-            'candidate_id': candidate_id
+    for _, row in candidates.iterrows():
+        candidate_id = row['candidate_id']
+        tech_id = row['technology_id']
+        is_main_tech = row['is_main_tech']
+
+        if candidate_id not in candidates_techs_dict:
+            candidates_techs_dict[candidate_id] = {
+                'city_id': row['city_id'],
+                'state_initials': row['state_initials'],
+                'start_experience_range': row['start_experience_range'],
+                'end_experience_range': row['end_experience_range'],
+                'technologies': {},
+                'score': 0,
+                'candidate_id': candidate_id,
+                'city': row['city']
+            }
+
+        # candidates_techs_dict[candidate_id]['technologies'][tech_id] = is_main_tech
+        candidates_techs_dict[candidate_id]['technologies'][tech_id] = {
+            'is_main_tech': is_main_tech,
+            'technology': row['technology']
         }
 
-    candidates_techs_dict[candidate_id]['technologies'][tech_id] = is_main_tech
+    return candidates_techs_dict
 
 
-def get_best_candidates():
-    candidate_id = '532252df-92dd-47ab-95ea-3a725071fdaa'
-    city_id = '2ee3b6cf-81c4-4b7a-abaf-e919212b277d'
-    start_experience_range = 4
-    end_experience_range = 5
-    technologies = [
-        'b2d2b12c-9759-4077-a9aa-d0156ed68ba4',
-        '770d4468-83f1-427e-9bba-52b78acfcfb5'
-    ]
-    state_initials = 'SC'
+def get_best_candidates(city_id, start_experience_range, end_experience_range, technologies_ids, state_initials
+                        ):
+    candidates_techs_dict = get_candidates_techs_dict()
 
     for key in candidates_techs_dict.keys():
         candidate_data = candidates_techs_dict[key]
@@ -66,11 +78,11 @@ def get_best_candidates():
         elif (candidate_data['start_experience_range'] > start_experience_range):
             candidate_data['score'] = candidate_data['score'] + 1
 
-        for tech in technologies:
+        for tech in technologies_ids:
             if tech in candidate_data['technologies']:
                 candidate_data['score'] = candidate_data['score'] + 3.5
 
-                is_main_tech = candidate_data['technologies'][tech]
+                is_main_tech = candidate_data['technologies'][tech]['is_main_tech']
 
                 if is_main_tech == True:
                     candidate_data['score'] = candidate_data['score'] + 1
@@ -81,21 +93,3 @@ def get_best_candidates():
 
     return sorted(candidates_techs_dict.values(),
                   key=lambda candidate: candidate['score'], reverse=True)
-
-
-server = Flask(__name__)
-
-
-@server.route("/")
-def get():
-    best_candidates = get_best_candidates()[:5]
-
-    response = {
-        'candidates': best_candidates
-    }
-
-    return jsonify(response)
-
-
-if __name__ == "__main__":
-    server.run(host='0.0.0.0')

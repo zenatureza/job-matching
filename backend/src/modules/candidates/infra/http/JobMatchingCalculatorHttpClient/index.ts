@@ -1,6 +1,8 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { inject, injectable } from 'tsyringe';
-import IJobMatchingCalculatorHttpClient from './IJobMatchingCalculatorHttpClient';
+import IJobMatchingCalculatorHttpClient, {
+  IRequest,
+} from './IJobMatchingCalculatorHttpClient';
 import JobMatchingCalculatorResponse from './JobMatchingCalculatorResponse.interface';
 
 // TODO: Remove magic string
@@ -8,15 +10,33 @@ import JobMatchingCalculatorResponse from './JobMatchingCalculatorResponse.inter
 export default class JobMatchingCalculatorHttpClient
   implements IJobMatchingCalculatorHttpClient {
   constructor(
-    @inject('axios')
+    @inject('jobMatchingCalculatorHttpClient')
     private readonly httpClient: AxiosInstance,
   ) {}
 
-  public async getData(): Promise<
-    AxiosResponse<JobMatchingCalculatorResponse>
-  > {
-    const response = await this.httpClient.get('http://localhost:5000');
+  public async getData({
+    cityId,
+    startExperienceRange,
+    endExperienceRange,
+    technologiesIds,
+    stateInitials,
+  }: IRequest): Promise<AxiosResponse<JobMatchingCalculatorResponse>> {
+    try {
+      const response = await this.httpClient.get('/', {
+        params: {
+          cityId,
+          startExperienceRange,
+          endExperienceRange,
+          technologiesIds,
+          stateInitials,
+        },
+      });
 
-    return response;
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+
+    return [] as any;
   }
 }

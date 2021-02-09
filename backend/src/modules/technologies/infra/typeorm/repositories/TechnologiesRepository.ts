@@ -33,6 +33,11 @@ class TechnologiesRepository implements ITechnologiesRepository {
 
     return technologies;
   }
+
+  public async getAll() {
+    const result = await this.ormRepository.find();
+    return result;
+  }
 }
 
 export default TechnologiesRepository;

@@ -1,6 +1,6 @@
 export interface ISearchResponseData {
   label: string;
-  id: number;
+  id: string;
 }
 
 export interface ISearchResponse {
