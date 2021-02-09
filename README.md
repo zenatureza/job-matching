@@ -12,3 +12,4 @@
 
 - [ ] Adicionar categorias nas tecnologias para inferir melhor os candidatos conforme ramo de atuação, por exemplo vaga pede React, candidato não possui, mas possui Vue.js (frontend)
 - [ ] Implementar autenticação, com perfil do recrutador
+- [ ] Implementar sistema de avaliação, para que o recrutador indique se os candidatos obtidos são realmente úteis

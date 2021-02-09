@@ -8,20 +8,10 @@ import JobMatchingCalculatorResponse from '../infra/http/JobMatchingCalculatorHt
 import CalculateBestCandidatesService from './CalculateBestCandidatesService';
 import SaveCandidatesService from './SaveCandidatesService';
 
-// TODO: should be this format?
 interface IRequest {
-  // TODO: can be a number
   cityId: string;
-
-  // TODO: Can be a range (from = 4, to = 5 <==> 4-5 years)
-  // experience: string;
-
   startExperienceRange: number;
-
   endExperienceRange: number;
-
-  // TODO: Could be { tech_id, is_main_tech }
-  // technologies: RecruitingApiCandidateTechnologyDTO[];
   technologiesIds: string[];
 }
 
@@ -32,13 +22,13 @@ interface IRequest {
 class GetBestCandidatesService {
   constructor(
     @inject('GetDataFromRecruitingApiService')
-    private getDataFromRecruitingApiService: GetDataFromRecruitingApiService,
+    private readonly getDataFromRecruitingApiService: GetDataFromRecruitingApiService,
 
     @inject('SaveCandidatesService')
-    private saveCandidatesService: SaveCandidatesService,
+    private readonly saveCandidatesService: SaveCandidatesService,
 
     @inject('CalculateBestCandidatesService')
-    private calculateBestCandidatesService: CalculateBestCandidatesService,
+    private readonly calculateBestCandidatesService: CalculateBestCandidatesService,
 
     @inject('CitiesRepository')
     private readonly citiesRepository: ICitiesRepository,

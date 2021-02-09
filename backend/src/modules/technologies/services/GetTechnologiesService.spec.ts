@@ -1,10 +1,16 @@
 import TechnologiesRepositoryMock from '../repositories/mocks/TechnologiesRepositoryMock';
+import GetTechnologiesService from './GetTechnologiesService';
 
 let technologiesRepositoryMock: TechnologiesRepositoryMock;
+let getTechnologiesService: GetTechnologiesService;
 
 describe('GetTechnologiesService', () => {
   beforeEach(() => {
     technologiesRepositoryMock = new TechnologiesRepositoryMock();
+
+    getTechnologiesService = new GetTechnologiesService(
+      technologiesRepositoryMock,
+    );
   });
 
   it('should get all techs', async () => {
@@ -17,7 +23,7 @@ describe('GetTechnologiesService', () => {
       name: 'C#',
     });
 
-    const techs = await technologiesRepositoryMock.getAll();
+    const techs = await getTechnologiesService.execute();
 
     expect(techs.length).toBe(2);
   });
