@@ -5,6 +5,7 @@ interface CandidateData {
   start_experience_range: number;
   state_initials: string;
   technologies: { [key: string]: boolean };
+  experience: string;
 }
 
 export default interface JobMatchingCalculatorResponse {

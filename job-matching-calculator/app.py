@@ -49,5 +49,4 @@ def get():
 
 if __name__ == "__main__":
     flask_host = os.environ.get('FLASK_HOST')
-    print(flask_host)
     server.run(host=flask_host)

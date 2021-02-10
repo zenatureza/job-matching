@@ -31,20 +31,15 @@ const TechnologiesSelector: React.FC<Props> = ({
   }, []);
 
   return (
-    <Fragment>
-      <Form.Group style={{ marginTop: '20px' }}>
-        <Form.Label>Digite para definir as tecnologias de interesse</Form.Label>
-        <Typeahead<ISearchResponseData>
-          id="basic-typeahead-multiple"
-          multiple
-          onChange={setSelectedOptions}
-          options={options}
-          placeholder="Selecione as tecnologias desejáveis"
-          selected={selectedOptions}
-          emptyLabel="Nenhum resultado encontrado"
-        />
-      </Form.Group>
-    </Fragment>
+    <Typeahead<ISearchResponseData>
+      id="basic-typeahead-multiple"
+      multiple
+      onChange={setSelectedOptions}
+      options={options}
+      placeholder="Selecione as tecnologias desejáveis"
+      selected={selectedOptions}
+      emptyLabel="Nenhum resultado encontrado"
+    />
   );
 };
 

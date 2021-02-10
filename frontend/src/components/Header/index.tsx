@@ -7,7 +7,7 @@ const Header: React.FC = () => {
   return (
     <>
       <Navbar bg="light" variant="light">
-        <Navbar.Brand href="#home">
+        <Navbar.Brand href="">
           <img
             src={Logo}
             width="60"

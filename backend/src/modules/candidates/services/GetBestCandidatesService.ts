@@ -2,6 +2,7 @@ import ICitiesRepository from '@modules/cities/repositories/ICitiesRepository';
 import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import RecruitingApiCandidateTechnologyDTO from '@modules/technologies/dtos/RecruitingApiCandidateTechnologyDTO';
 import AppError from '@shared/errors/AppError';
+import getExperience from '@shared/utils/getFormattedExperience';
 import { inject, injectable } from 'tsyringe';
 import CandidateDTO from '../dtos/CandidateDTO';
 import JobMatchingCalculatorResponse from '../infra/http/JobMatchingCalculatorHttpClient/JobMatchingCalculatorResponse.interface';
@@ -62,6 +63,16 @@ class GetBestCandidatesService {
       technologiesIds,
       stateInitials: city.state_initials,
     });
+
+    // adds experience as a readable string
+    if (bestCandidates) {
+      bestCandidates.candidates.forEach(candidate => {
+        candidate.experience = getExperience(
+          candidate.start_experience_range,
+          candidate.end_experience_range,
+        );
+      });
+    }
 
     return bestCandidates;
   }
