@@ -27,3 +27,4 @@ docker-compose up --build -d
 - [ ] Implementar autenticação, com perfil do recrutador
 - [ ] Implementar sistema de avaliação, para que o recrutador indique se os candidatos obtidos são realmente úteis
 - [ ] Implementar processo de CI/CD
+- [ ] Implementar testes de integração
