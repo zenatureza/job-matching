@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 
-import RecruitingApi from '@shared/infra/http/RecruitingApi';
-import axios, { AxiosStatic } from 'axios';
+import axios from 'axios';
 import GetDataFromRecruitingApiService from './GetDataFromRecruitingApiService';
 import * as apiData from '@tests/fixtures/candidates.json';
+import RecruitingApiHttpClient from '@shared/infra/http/RecruitingApiHttpClient';
 
-let recruitingApi: RecruitingApi;
+let recruitingApi: RecruitingApiHttpClient;
 let getCandidatesFromApiService: GetDataFromRecruitingApiService;
 
 jest.mock('axios');
@@ -16,7 +16,7 @@ describe('GetDataFromRecruitingApiService', () => {
   it('should be able to get all candidates and jobs', async () => {
     mockedAxios.get.mockResolvedValue({ data: apiData });
 
-    recruitingApi = new RecruitingApi(mockedAxios);
+    recruitingApi = new RecruitingApiHttpClient(mockedAxios);
     getCandidatesFromApiService = new GetDataFromRecruitingApiService(
       recruitingApi,
     );
@@ -31,7 +31,7 @@ describe('GetDataFromRecruitingApiService', () => {
   it('should log error when couldnt get data', async () => {
     mockedAxios.get.mockResolvedValue({ data: null });
 
-    recruitingApi = new RecruitingApi(mockedAxios);
+    recruitingApi = new RecruitingApiHttpClient(mockedAxios);
     getCandidatesFromApiService = new GetDataFromRecruitingApiService(
       recruitingApi,
     );

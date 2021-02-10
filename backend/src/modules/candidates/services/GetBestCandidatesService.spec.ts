@@ -1,6 +1,5 @@
 import CitiesRepositoryMock from '@modules/cities/repositories/mocks/CitiesRepositoryMock';
 import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
-import RecruitingApi from '@shared/infra/http/RecruitingApi';
 import axios from 'axios';
 import CalculateBestCandidatesService from './CalculateBestCandidatesService';
 import SaveCandidatesService from './SaveCandidatesService';
@@ -16,8 +15,9 @@ import CandidatesTechnologiesRepositoryMock from '../repositories/mocks/Candidat
 import UpdateCandidatesTechnologiesService from './UpdateCandidatesTechnologiesService';
 import JobMatchingCalculatorHttpClient from '../infra/http/JobMatchingCalculatorHttpClient';
 import AppError from '@shared/errors/AppError';
+import RecruitingApiHttpClient from '@shared/infra/http/RecruitingApiHttpClient';
 
-let recruitingApi: RecruitingApi;
+let recruitingApiHttpClient: RecruitingApiHttpClient;
 let getDataFromRecruitingApiService: GetDataFromRecruitingApiService;
 let saveCandidatesService: SaveCandidatesService;
 let calculateBestCandidatesService: CalculateBestCandidatesService;
@@ -83,9 +83,11 @@ describe('GetBestCandidatesService', () => {
 
     recruitingApiMockedAxios.get.mockResolvedValue({ data: apiData });
 
-    recruitingApi = new RecruitingApi(recruitingApiMockedAxios);
+    recruitingApiHttpClient = new RecruitingApiHttpClient(
+      recruitingApiMockedAxios,
+    );
     getDataFromRecruitingApiService = new GetDataFromRecruitingApiService(
-      recruitingApi,
+      recruitingApiHttpClient,
     );
 
     jest.resetModules();
@@ -148,9 +150,11 @@ describe('GetBestCandidatesService', () => {
 
     recruitingApiMockedAxios.get.mockResolvedValue({ data: apiData });
 
-    recruitingApi = new RecruitingApi(recruitingApiMockedAxios);
+    recruitingApiHttpClient = new RecruitingApiHttpClient(
+      recruitingApiMockedAxios,
+    );
     getDataFromRecruitingApiService = new GetDataFromRecruitingApiService(
-      recruitingApi,
+      recruitingApiHttpClient,
     );
 
     jobMatchingCalculatorHttpClient = new JobMatchingCalculatorHttpClient(
@@ -183,9 +187,11 @@ describe('GetBestCandidatesService', () => {
 
     recruitingApiMockedAxios.get.mockResolvedValue({ data: null });
 
-    recruitingApi = new RecruitingApi(recruitingApiMockedAxios);
+    recruitingApiHttpClient = new RecruitingApiHttpClient(
+      recruitingApiMockedAxios,
+    );
     getDataFromRecruitingApiService = new GetDataFromRecruitingApiService(
-      recruitingApi,
+      recruitingApiHttpClient,
     );
 
     jest.resetModules();

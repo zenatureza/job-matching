@@ -46,7 +46,23 @@ services:
       - backend
     networks:
       - app-network
-    restart: always
+    restart: unless-stopped
+    volumes:
+      - ./backend/.docker/nginx/nginx.conf/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - nginx
+    command: certonly --webroot --webroot-path=/var/www/html --email arthur.pinheiro357@gmail.com --agree-tos --no-eff-email --staging -d jobmatching-api.zenatureza.com -d www.jobmatching-api.zenatureza.com
 
   # bitnami-postgres:
   postgres:
@@ -64,6 +80,7 @@ services:
       - app-network
     volumes:
       - ./database/:/var/lib/postgresql/data 
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
       # - 'postgresql_data_12:/bitnami/postgresql12'
 
 
@@ -71,6 +88,12 @@ networks:
   app-network:
     driver: bridge
 
-# volumes:
-#   postgresql_data_12:
-#     driver: local
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/deploy/app/job-matching/views/
+      o: bind

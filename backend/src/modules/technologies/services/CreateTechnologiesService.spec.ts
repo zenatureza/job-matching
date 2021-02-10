@@ -27,6 +27,7 @@ describe('CreateTechnologiesService', () => {
   it('should not create already existing technology', async () => {
     await technologiesRepositoryMock.create({
       name: 'Python',
+      is_main_tech: false,
     });
 
     const createdTechnologies = await createTechnologiesService.execute([
