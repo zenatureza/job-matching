@@ -15,10 +15,16 @@ yarn test
 
 ## Usar a aplicação em modo de desenvolvimento
 
-Para utilizar a aplicação em desenvolvimento recomendo usar o docker-compose:
+Para utilizar o backend da aplicação em desenvolvimento recomendo usar o docker-compose:
 
 ```shell
 docker-compose up --build -d
+```
+
+E o frontend basta rodar:
+
+```shell
+cd frontend && yarn start
 ```
 
 ## Coisas a melhorar
