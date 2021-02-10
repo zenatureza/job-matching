@@ -5,7 +5,7 @@ import RecruitingApiResponse from './RecruitingApiResponse.interface';
 
 // TODO: Remove magic string
 @injectable()
-export default class RecruitingApi implements IRecruitingApi {
+export default class RecruitingApiHttpClient implements IRecruitingApi {
   constructor(
     @inject('recruitingApiHttpClient')
     private readonly httpClient: AxiosInstance,

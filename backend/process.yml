@@ -1,0 +1,5 @@
+apps:
+    - name: jobmatching-backend
+      script: ./dist/shared/infra/http/server.js
+      exec_mode: cluster
+      instances: max

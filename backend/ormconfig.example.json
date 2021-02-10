@@ -7,8 +7,8 @@
     "username": "postgres",
     "password": "postgres",
     "database": "jobmatching",
-    "entities": ["./src/modules/**/infra/typeorm/entities/*.entity.ts"],
-    "migrations": ["./src/shared/infra/typeorm/migrations/*.ts"],
+    "entities": ["./src/modules/**/infra/typeorm/entities/*.entity.{ts,js}"],
+    "migrations": ["./src/shared/infra/typeorm/migrations/*.{ts,js}"],
     "synchronize": true,
     "cli": {
       "migrationsDir": "./src/shared/infra/typeorm/migrations"
@@ -22,8 +22,8 @@
     "username": "postgres",
     "password": "postgres",
     "database": "jobmatching",
-    "entities": ["./src/modules/**/infra/typeorm/entities/*.entity.ts"],
-    "migrations": ["./src/shared/infra/typeorm/seeds/*.ts"],
+    "entities": ["./src/modules/**/infra/typeorm/entities/*.entity.{ts,js}"],
+    "migrations": ["./src/shared/infra/typeorm/seeds/*.{ts,js}"],
     "cli": {
       "migrationsDir": "./src/shared/infra/typeorm/seeds"
     }

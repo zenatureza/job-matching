@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  job-matching-calculator:
+    build: ./job-matching-calculator/
+    ports:
+      - 5000:5000
+    networks:
+      - app-network
+    environment:
+      - POSTGRES_DATABASE=$POSTGRES_DATABASE
+      - POSTGRES_USERNAME=$POSTGRES_USERNAME
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_PORT=$POSTGRES_PORT
+    depends_on:
+      - postgres
+
+  backend:
+    build: ./backend/
+    ports:
+      - 3333:3333
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+
+  # bitnami-postgres:
+  postgres:
+    # image: 'bitnami/postgresql:12'
+    image: postgres
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRES_DATABASE=$POSTGRES_DATABASE
+      - POSTGRES_USERNAME=$POSTGRES_USERNAME
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_PORT=$POSTGRES_PORT
+    networks:
+      - app-network
+    volumes:
+      - ./database/:/var/lib/postgresql/data 
+      # - 'postgresql_data_12:/bitnami/postgresql12'
+
+
+networks:
+  app-network:
+    driver: bridge
+
+# volumes:
+#   postgresql_data_12:
+#     driver: local

@@ -10,10 +10,10 @@
     "allowJs": true,
     "baseUrl": "./src",
     "paths": {
-      "@modules/*": ["./modules/*"],
-      "@config/*": ["./config/*"],
-      "@shared/*": ["./shared/*"],
-      "@tests/*": ["./__tests__/*"]
+      "@modules/*": ["modules/*"],
+      "@config/*": ["config/*"],
+      "@shared/*": ["shared/*"],
+      "@tests/*": ["__tests__/*"]
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,

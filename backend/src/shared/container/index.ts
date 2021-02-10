@@ -15,7 +15,7 @@ import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/Get
 import TechnologiesRepository from '@modules/technologies/infra/typeorm/repositories/TechnologiesRepository';
 import ITechnologiesRepository from '@modules/technologies/repositories/ITechnologiesRepository';
 import CreateTechnologiesService from '@modules/technologies/services/CreateTechnologiesService';
-import RecruitingApi from '@shared/infra/http/RecruitingApi';
+import RecruitingApiHttpClient from '@shared/infra/http/RecruitingApiHttpClient';
 import axios, { AxiosInstance, AxiosStatic } from 'axios';
 import { container } from 'tsyringe';
 
@@ -33,7 +33,10 @@ container.registerInstance<AxiosInstance>(
   }),
 );
 
-container.registerSingleton<RecruitingApi>('RecruitingApi', RecruitingApi);
+container.registerSingleton<RecruitingApiHttpClient>(
+  'RecruitingApi',
+  RecruitingApiHttpClient,
+);
 
 container.registerSingleton<JobMatchingCalculatorHttpClient>(
   'JobMatchingCalculatorHttpClient',

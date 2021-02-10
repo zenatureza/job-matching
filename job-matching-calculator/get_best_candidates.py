@@ -5,21 +5,28 @@ import pandas.io.sql as psql
 
 load_dotenv()
 
+
 POSTGRES_DATABASE = os.environ.get('POSTGRES_DATABASE')
-POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_USER = os.environ.get('POSTGRES_USERNAME')
 POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
 POSTGRES_HOST = os.environ.get('POSTGRES_HOST')
+POSTGRES_PORT = os.environ.get('POSTGRES_PORT')
 
-CONNECTION_STRING = 'host={host} dbname={dbname} user={user} password={password}'.format(
-    host=POSTGRES_HOST, dbname=POSTGRES_DATABASE, user=POSTGRES_USER, password=POSTGRES_PASSWORD)
+print(POSTGRES_PASSWORD)
+
+CONNECTION_STRING = 'host={host} dbname={dbname} user={user} password={password} port={port}'.format(
+    host=POSTGRES_HOST, dbname=POSTGRES_DATABASE, user=POSTGRES_USER, password=POSTGRES_PASSWORD, port=POSTGRES_PORT)
 print(CONNECTION_STRING)
 
 connection = pg.connect(CONNECTION_STRING)
-dataframe = psql.read_sql('SELECT * FROM candidates_view', connection)
-candidates = psql.read_sql_query('select * from candidates_view', connection)
 
 
 def get_candidates_techs_dict():
+    # dataframe = psql.read_sql('SELECT * FROM candidates_view', connection)
+
+    candidates = psql.read_sql_query(
+        'select * from candidates_view', connection)
+
     candidates_techs_dict = {}
 
     for _, row in candidates.iterrows():

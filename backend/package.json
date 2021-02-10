@@ -5,8 +5,10 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
+    "build:migrations": "node -r ts-node/register ./node_modules/typeorm/cli.js migration:run",
+    "build:seeds": "node -r ts-node/register ./node_modules/typeorm/cli.js migration:run -c seed",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/http/server.ts",
-    "start": "ts-node -r tsconfig-paths/register src/shared/infra/http/server.ts",
+    "start": "node dist/shared/infra/http/server.js --trace-warnings",
     "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "test": "jest",
     "seed:run": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -c seed",

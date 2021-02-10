@@ -1,9 +1,6 @@
-import 'reflect-metadata';
-
-import IRecruitingApi from '@shared/infra/http/RecruitingApi/IRecruitingApi';
-import RecruitingApiResponse from '@shared/infra/http/RecruitingApi/RecruitingApiResponse.interface';
+import RecruitingApiHttpClient from '@shared/infra/http/RecruitingApiHttpClient/index';
+import RecruitingApiResponse from '@shared/infra/http/RecruitingApiHttpClient/RecruitingApiResponse.interface';
 import { inject, injectable } from 'tsyringe';
-import RecruitingApi from '@shared/infra/http/RecruitingApi';
 
 /**
  * This service will be used internally to update db records
@@ -13,7 +10,7 @@ import RecruitingApi from '@shared/infra/http/RecruitingApi';
 class GetDataFromRecruitingApiService {
   constructor(
     @inject('RecruitingApi')
-    private recruitingApi: RecruitingApi,
+    private recruitingApi: RecruitingApiHttpClient,
   ) {}
 
   public async execute(): Promise<RecruitingApiResponse | undefined> {
