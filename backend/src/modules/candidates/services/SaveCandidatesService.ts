@@ -17,7 +17,6 @@ import UpdateCandidatesTechnologiesService from './UpdateCandidatesTechnologiesS
 /**
  * Should update db candidates with recruiting api data.
  */
-// TODO: add tests
 @injectable()
 class SaveCandidatesService {
   constructor(
@@ -40,8 +39,6 @@ class SaveCandidatesService {
   public async execute(
     recruitingApiCandidates: RecruitingApiCandidateDTO[],
   ): Promise<void> {
-    // TODO: should move candidatesTechnologiesNames inside this.createTechnologiesService.execute(techNamesToCreate)
-
     // searches for technologies
     let candidatesTechnologiesNames: string[] = [];
     recruitingApiCandidates.forEach(candidate => {

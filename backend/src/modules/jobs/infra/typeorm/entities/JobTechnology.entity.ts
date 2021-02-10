@@ -26,8 +26,6 @@ class JobTechnology {
   @OneToOne(() => Technology)
   technology: Technology;
 
-  // TODO: should have is_main_tech?
-
   @CreateDateColumn()
   created_at: Date;
 

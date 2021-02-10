@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 export default class TechnologiesController {
-  // TODO: should return all available techs
   public async get(request: Request, response: Response): Promise<Response> {
     const service = container.resolve(GetTechnologiesService);
 

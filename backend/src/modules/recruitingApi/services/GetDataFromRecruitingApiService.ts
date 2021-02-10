@@ -17,8 +17,6 @@ class GetDataFromRecruitingApiService {
     const { data } = await this.recruitingApi.getData();
 
     if (!data) {
-      // TODO: shoud log
-      // console.log('❌ logging...');
       return;
     }
 

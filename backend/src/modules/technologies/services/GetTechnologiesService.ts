@@ -9,7 +9,6 @@ class GetTechnologiesService {
     private readonly technologiesRepository: ITechnologiesRepository,
   ) {}
 
-  // TODO: techs: [ { name: '', id: '' } ]
   public async execute(): Promise<Technology[]> {
     return await this.technologiesRepository.getAll();
   }

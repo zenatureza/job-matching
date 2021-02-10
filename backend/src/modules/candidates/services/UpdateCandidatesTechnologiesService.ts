@@ -32,7 +32,6 @@ class UpdateCandidatesTechnologiesService {
     )
       return;
 
-    // TODO: techNames variable should be retreived via utils function
     let candidatesTechnologiesNames: string[] = [];
     recruitingApiCandidates.forEach(candidate => {
       candidate.technologies.forEach(tech => {

@@ -188,7 +188,7 @@ const Index: React.FC = () => {
           </Form.Row>
 
           <Form.Row style={{ margin: "1em" }}>
-            <Form.Group as={Col}>
+            <Form.Group className="col-md-12">
               <Form.Label>Busque a cidade</Form.Label>
               <AsyncFormSelect
                 loadOptions={promiseOptions}
@@ -260,7 +260,7 @@ const Index: React.FC = () => {
       {candidates && !loading && (
         <Col>
           <p style={{ margin: "1em", marginBottom: ".5em" }}>
-            Os melhores candidatos encontrados para a vaga são:
+            O(a)s melhores candidato(a)s encontrado(a)s para a vaga são:
           </p>
           <CardDeck className="col-md-12">
             {candidates.candidates.map((candidate) => (

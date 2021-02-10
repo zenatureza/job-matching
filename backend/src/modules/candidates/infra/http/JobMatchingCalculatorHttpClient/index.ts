@@ -5,7 +5,6 @@ import IJobMatchingCalculatorHttpClient, {
 } from './IJobMatchingCalculatorHttpClient';
 import JobMatchingCalculatorResponse from './JobMatchingCalculatorResponse.interface';
 
-// TODO: Remove magic string
 @injectable()
 export default class JobMatchingCalculatorHttpClient
   implements IJobMatchingCalculatorHttpClient {

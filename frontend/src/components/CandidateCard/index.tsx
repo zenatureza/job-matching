@@ -1,7 +1,7 @@
-import faker from 'faker';
-import React from 'react';
-import { Badge, Card } from 'react-bootstrap';
-import { Technology } from '../../interfaces/IGetBestCandidatesResponse.interface';
+import faker from "faker";
+import React from "react";
+import { Badge, Card } from "react-bootstrap";
+import { Technology } from "../../interfaces/IGetBestCandidatesResponse.interface";
 
 interface Props {
   candidateId: string;
@@ -25,21 +25,21 @@ const CandidateCard: React.FC<Props> = ({
 
   return (
     <Card
-      border={city !== expectedCity ? 'primary' : 'success'}
-      style={{ margin: '1em' }}
+      border={city !== expectedCity ? "primary" : "success"}
+      // style={{ margin: '1em' }}
       className="col-md-6"
     >
       <Card.Header>{faker.name.firstName()}</Card.Header>
       <Card.Body>
         <Card.Title>Cidade: {city}</Card.Title>
         <Card.Text>
-          Tecnologias:{' '}
+          Tecnologias:{" "}
           {Object.keys(technologies).map((techId) => (
             <Badge
               className="mx-1 my-1"
               key={techId}
               variant={
-                selectedTechnologies.includes(techId) ? 'success' : 'secondary'
+                selectedTechnologies.includes(techId) ? "success" : "secondary"
               }
             >
               {technologies[techId].technology}
@@ -47,13 +47,13 @@ const CandidateCard: React.FC<Props> = ({
           ))}
           <br />
           <br />
-          Principais tecnologias:{' '}
+          Principais tecnologias:{" "}
           {getMainTechs() &&
             getMainTechs().map((tech) => (
               <Badge
                 className="mx-1 my-1"
                 key={tech.technology}
-                variant={'primary'}
+                variant={"primary"}
               >
                 {tech.technology}
               </Badge>
