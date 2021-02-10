@@ -1,8 +1,7 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import Form from 'react-bootstrap/esm/Form';
-import { ISearchResponseData } from '../../interfaces/ISearchResponse.interface';
-import { api } from '../../services/api';
+import React, { useEffect, useState } from "react";
+import { Typeahead } from "react-bootstrap-typeahead";
+import { ISearchResponseData } from "../../interfaces/ISearchResponse.interface";
+import { api } from "../../services/api";
 
 interface Props {
   setSelectedOptions(selected: ISearchResponseData[]): void;
@@ -13,14 +12,11 @@ const TechnologiesSelector: React.FC<Props> = ({
   selectedOptions,
   setSelectedOptions,
 }: Props) => {
-  // const [selectedOptions, setSelectedOptions] = useState<ISearchResponseData[]>(
-  //   []
-  // );
   const [options, setOptions] = useState<ISearchResponseData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await api.get<ISearchResponseData[]>('/technologies');
+      const response = await api.get<ISearchResponseData[]>("/technologies");
 
       if (response && response.data) {
         setOptions(response.data);
