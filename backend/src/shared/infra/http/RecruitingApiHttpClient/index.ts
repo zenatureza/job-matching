@@ -1,5 +1,4 @@
-import AppError from '@shared/errors/AppError';
-import axios, { AxiosInstance, AxiosResponse, AxiosStatic } from 'axios';
+import { AxiosInstance, AxiosResponse } from 'axios';
 import { inject, injectable } from 'tsyringe';
 import IRecruitingApi from './IRecruitingApi';
 import RecruitingApiResponse from './RecruitingApiResponse.interface';
@@ -12,13 +11,9 @@ export default class RecruitingApiHttpClient implements IRecruitingApi {
   ) {}
 
   public async getData(): Promise<AxiosResponse<RecruitingApiResponse>> {
-    const apiEndpoint = process.env.RECRUITING_API_ENDPOINT;
-
-    if (!apiEndpoint) {
-      throw new AppError('Could not retreive most recent data', 500);
-    }
-
-    const response = await this.httpClient.get(apiEndpoint);
+    const response = await this.httpClient.get(
+      'https://geekhunter-recruiting.s3.amazonaws.com/code_challenge.json',
+    );
 
     return response;
   }
