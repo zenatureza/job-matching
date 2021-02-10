@@ -29,7 +29,7 @@ container.registerInstance<AxiosInstance>(
 container.registerInstance<AxiosInstance>(
   'jobMatchingCalculatorHttpClient',
   axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: process.env.JOBMATCHINGCALCULATOR_URL,
   }),
 );
 

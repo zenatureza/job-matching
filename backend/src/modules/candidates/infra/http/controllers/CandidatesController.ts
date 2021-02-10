@@ -1,4 +1,6 @@
 import GetBestCandidatesService from '@modules/candidates/services/GetBestCandidatesService';
+import SaveCandidatesService from '@modules/candidates/services/SaveCandidatesService';
+import GetDataFromRecruitingApiService from '@modules/recruitingApi/services/GetDataFromRecruitingApiService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
@@ -42,5 +44,26 @@ export default class CandidatesController {
     const data = await service.execute(params);
 
     return response.json(data);
+  }
+
+  public async create(request: Request, response: Response): Promise<Response> {
+    const getDataFromRecruitingApiService = container.resolve(
+      GetDataFromRecruitingApiService,
+    );
+    const saveCandidatesService = container.resolve(SaveCandidatesService);
+
+    const recruitingApiData = await getDataFromRecruitingApiService.execute();
+
+    if (
+      recruitingApiData &&
+      recruitingApiData.candidates &&
+      recruitingApiData.jobs
+    ) {
+      await saveCandidatesService.execute(recruitingApiData.candidates);
+    }
+
+    return response.status(200).json({
+      message: 'Done',
+    });
   }
 }

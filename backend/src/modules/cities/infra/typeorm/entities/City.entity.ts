@@ -13,20 +13,8 @@ class City {
   @Column()
   state_initials: string;
 
-  // @Column()
-  // state_id: string;
-
-  // @OneToOne(() => State, { nullable: true })
-  // state: State;
-
   // e.g. name = 'São Paulo', state.initials = 'SP' -> 'São Paulo - SP'
   public getCityWithState() {
-    // // if remote this.state is null
-    // if (!this.state_initials) {
-    //   return this.name;
-    // }
-
-    // return `${this.name} - ${this.state_initials}`.toUpperCase();
     return getCityWithState(this.name, this.state_initials);
   }
 }

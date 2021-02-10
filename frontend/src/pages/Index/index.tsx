@@ -1,22 +1,22 @@
-import { FormHandles } from '@unform/core';
-import { Form as UnformForm } from '@unform/web';
-import React, { useCallback, useRef, useState } from 'react';
-import { Button, CardDeck, Col, Form, Spinner } from 'react-bootstrap';
-import { ValueType } from 'react-select';
-import * as Yup from 'yup';
-import AsyncFormSelect from '../../components/AsyncFormSelect';
-import CandidateCard from '../../components/CandidateCard';
-import FormInput from '../../components/FormInput';
-import TechnologiesSelector from '../../components/TechnologiesSelector';
-import { ToastTypesEnum } from '../../enums/toastTypes.enum';
-import useToast from '../../hooks/useToast';
-import IGetBestCandidatesRequest from '../../interfaces/IGetBestCandidatesRequest.interface';
-import IGetBestCandidatesResponse from '../../interfaces/IGetBestCandidatesResponse.interface';
-import { ISearchRequest } from '../../interfaces/ISearchRequest.interface';
-import { ISearchResponseData } from '../../interfaces/ISearchResponse.interface';
-import { OptionType } from '../../interfaces/ISelectOption.interface';
-import { api } from '../../services/api';
-import getValidationErrors from '../../utils/getValidationErrors';
+import { FormHandles } from "@unform/core";
+import { Form as UnformForm } from "@unform/web";
+import React, { useCallback, useRef, useState } from "react";
+import { Button, CardDeck, Col, Form, Spinner } from "react-bootstrap";
+import { ValueType } from "react-select";
+import * as Yup from "yup";
+import AsyncFormSelect from "../../components/AsyncFormSelect";
+import CandidateCard from "../../components/CandidateCard";
+import FormInput from "../../components/FormInput";
+import TechnologiesSelector from "../../components/TechnologiesSelector";
+import { ToastTypesEnum } from "../../enums/toastTypes.enum";
+import useToast from "../../hooks/useToast";
+import IGetBestCandidatesRequest from "../../interfaces/IGetBestCandidatesRequest.interface";
+import IGetBestCandidatesResponse from "../../interfaces/IGetBestCandidatesResponse.interface";
+import { ISearchRequest } from "../../interfaces/ISearchRequest.interface";
+import { ISearchResponseData } from "../../interfaces/ISearchResponse.interface";
+import { OptionType } from "../../interfaces/ISelectOption.interface";
+import { api } from "../../services/api";
+import getValidationErrors from "../../utils/getValidationErrors";
 
 const Index: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
@@ -42,14 +42,14 @@ const Index: React.FC = () => {
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
-          cityId: Yup.string().uuid().required('Selecione uma cidade válida'),
+          cityId: Yup.string().uuid().required("Selecione uma cidade válida"),
           startExperienceRange: Yup.number()
             .integer()
-            .typeError('Insira o tempo mínimo de experiência')
-            .required('Insira o tempo mínimo de experiência'),
+            .typeError("Insira o tempo mínimo de experiência")
+            .required("Insira o tempo mínimo de experiência"),
           technologiesIds: Yup.array()
-            .min(1, 'Selecione ao menos uma tecnologia')
-            .required('Selecione pelo menos uma tecnologia'),
+            .min(1, "Selecione ao menos uma tecnologia")
+            .required("Selecione pelo menos uma tecnologia"),
         });
 
         formData.technologiesIds = selectedTechnologies.map((tech) => tech.id);
@@ -77,14 +77,14 @@ const Index: React.FC = () => {
   const getCity = useCallback(() => {
     const cityRef = formRef.current?.getFieldRef(`city`) as any;
 
-    const cityProps = cityRef['props'];
-    let city = '';
+    const cityProps = cityRef["props"];
+    let city = "";
     if (
-      typeof cityProps !== 'undefined' &&
-      'value' in cityProps &&
-      'id' in cityProps['value']
+      typeof cityProps !== "undefined" &&
+      "value" in cityProps &&
+      "id" in cityProps["value"]
     ) {
-      city = cityProps['value']['label'];
+      city = cityProps["value"]["label"];
     }
 
     return city;
@@ -101,17 +101,17 @@ const Index: React.FC = () => {
       try {
         const cityRef = formRef.current?.getFieldRef(`city`) as any;
 
-        const cityProps = cityRef['props'];
-        let cityId = '';
-        if (cityProps && 'value' in cityProps && 'id' in cityProps['value']) {
-          cityId = cityProps['value']['id'];
+        const cityProps = cityRef["props"];
+        let cityId = "";
+        if (cityProps && "value" in cityProps && "id" in cityProps["value"]) {
+          cityId = cityProps["value"]["id"];
         }
 
         const { startExperienceRange, endExperienceRange } = formData;
 
         setLoading(true);
         const response = await api.get<IGetBestCandidatesResponse>(
-          '/candidates',
+          "/candidates",
           {
             params: {
               cityId,
@@ -125,8 +125,8 @@ const Index: React.FC = () => {
         if (!response.data) {
           addToast({
             type: ToastTypesEnum.error,
-            title: 'Erro ao obter os dados',
-            description: 'Ocorreu um erro ao buscar os candidatos',
+            title: "Erro ao obter os dados",
+            description: "Ocorreu um erro ao buscar os candidatos",
           });
         }
 
@@ -134,8 +134,8 @@ const Index: React.FC = () => {
       } catch (error) {
         addToast({
           type: ToastTypesEnum.error,
-          title: 'Erro ao obter os dados',
-          description: 'Ocorreu um erro ao buscar os candidatos',
+          title: "Erro ao obter os dados",
+          description: "Ocorreu um erro ao buscar os candidatos",
         });
       } finally {
         setLoading(false);
@@ -158,14 +158,14 @@ const Index: React.FC = () => {
 
   const promiseOptions = async (inputValue: string): Promise<any> => {
     if (inputValue && inputValue.length >= 3)
-      return await handleCitySearch({ url: '/cities', filter: inputValue });
+      return await handleCitySearch({ url: "/cities", filter: inputValue });
   };
 
   return (
     <>
       <UnformForm ref={formRef} id="form" onSubmit={handleSubmit}>
         <>
-          <Form.Row style={{ margin: '1em' }}>
+          <Form.Row style={{ margin: "1em" }}>
             <Form.Group as={Col}>
               <Form.Label>Insira as tecnologias desejadas</Form.Label>
               <TechnologiesSelector
@@ -179,15 +179,15 @@ const Index: React.FC = () => {
                     <Form.Control.Feedback
                       type="invalid"
                       tooltip
-                      style={{ display: 'block' }}
+                      style={{ display: "block" }}
                     >
-                      {'Selecione ao menos uma tecnologia'}
+                      {"Selecione ao menos uma tecnologia"}
                     </Form.Control.Feedback>
                   )))}
             </Form.Group>
           </Form.Row>
 
-          <Form.Row style={{ margin: '1em' }}>
+          <Form.Row style={{ margin: "1em" }}>
             <Form.Group as={Col}>
               <Form.Label>Busque a cidade</Form.Label>
               <AsyncFormSelect
@@ -202,15 +202,15 @@ const Index: React.FC = () => {
                 <Form.Control.Feedback
                   type="invalid"
                   tooltip
-                  style={{ display: 'block' }}
+                  style={{ display: "block" }}
                 >
-                  {'Selecione a cidade'}
+                  {"Selecione a cidade"}
                 </Form.Control.Feedback>
               )}
             </Form.Group>
 
             <Form.Group as={Col}>
-              <Form.Label>Tempo mínimo de experiência</Form.Label>
+              <Form.Label>Tempo mínimo de experiência (em anos)</Form.Label>
               <FormInput
                 className="form-control"
                 name="startExperienceRange"
@@ -220,7 +220,7 @@ const Index: React.FC = () => {
             </Form.Group>
 
             <Form.Group as={Col}>
-              <Form.Label>Tempo limite de experiência</Form.Label>
+              <Form.Label>Tempo limite de experiência (em anos)</Form.Label>
               <FormInput
                 className="form-control"
                 name="endExperienceRange"
@@ -230,10 +230,10 @@ const Index: React.FC = () => {
             </Form.Group>
           </Form.Row>
 
-          <Form.Row style={{ margin: '1em' }}>
+          <Form.Row style={{ margin: "1em" }}>
             <Form.Group as={Col}>
               <Button disabled={!!loading} form="form" type="submit">
-                {!loading ? 'Buscar melhores candidatos' : 'Buscando...'}
+                {!loading ? "Buscar melhores candidatos" : "Buscando..."}
               </Button>
             </Form.Group>
           </Form.Row>
@@ -244,9 +244,9 @@ const Index: React.FC = () => {
         <Form.Row
           className="m-1"
           style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            display: 'flex',
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
           }}
         >
           <Spinner animation="grow" variant="primary" />
@@ -259,7 +259,7 @@ const Index: React.FC = () => {
 
       {candidates && !loading && (
         <Col>
-          <p style={{ margin: '1em', marginBottom: '.5em' }}>
+          <p style={{ margin: "1em", marginBottom: ".5em" }}>
             Os melhores candidatos encontrados para a vaga são:
           </p>
           <CardDeck className="col-md-12">

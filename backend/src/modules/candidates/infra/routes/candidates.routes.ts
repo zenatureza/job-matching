@@ -5,7 +5,6 @@ import CandidatesController from '../http/controllers/CandidatesController';
 const candidatesRouter = Router();
 const candidatesController = new CandidatesController();
 
-// TODO: add celebrate validation
 candidatesRouter.get(
   '/',
   celebrate({
@@ -26,12 +25,11 @@ candidatesRouter.get(
           Joi.string().uuid().message('"technologyId" should be a valid uuid'),
         )
         .required(),
-      // .message('"technologiesIds" should be informed'),
-      // .required()
-      // .message('"technologiesIds" should be informed'),
     },
   }),
   candidatesController.get,
 );
+
+candidatesRouter.post('/startdb', candidatesController.create);
 
 export default candidatesRouter;
